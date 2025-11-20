@@ -7,11 +7,18 @@ import Footer from "../../components/landing/Footer";
 export default function LandingPage() {
   return (
     <div>
+
       <Navbar />
-      <Hero />
+
+      {/* WRAPPER FOR HERO — same padding + background as navbar */}
+      <div className="bg-[#F1F2F4] px-4 ">
+        <Hero />
+      </div>
+
       <Features />
       <HowItWorks />
       <Footer />
+
     </div>
   );
 }
