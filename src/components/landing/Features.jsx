@@ -1,22 +1,18 @@
 import { useEffect, useState } from "react";
 
 export default function Features() {
-
   const [bgOpacity, setBgOpacity] = useState(0);
 
+  // Fade to black starting at 150px
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
 
-      // 🔥 Fade starts earlier & goes full black
-      const fadeStart = 300;  
-      const fadeEnd = 1100;   
+      const fadeStart = 150;
+      const fadeEnd = 600;
 
       let opacity = (scrollY - fadeStart) / (fadeEnd - fadeStart);
-
-      // Clamp 0 - 1
-      opacity = Math.max(0, Math.min(opacity, 1));
-
+      opacity = Math.min(Math.max(opacity, 0), 1);
       setBgOpacity(opacity);
     };
 
@@ -26,43 +22,69 @@ export default function Features() {
 
   return (
     <section
-      className="w-full py-32 px-6 transition-all duration-500"
+      className="w-full py-40 px-6 transition-all duration-700"
       style={{
         backgroundColor: `rgb(0 0 0 / ${bgOpacity})`,
       }}
     >
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto text-center">
 
-        {/* SECTION TITLE */}
-        <h2 className="text-5xl font-bold mb-16"
-            style={{ color: bgOpacity > 0.2 ? "white" : "black" }}>
-          Why IntelliLearn?
+        {/* Section Title */}
+        <h2
+          className="text-5xl font-extrabold mb-6 transition-colors duration-500"
+          style={{ color: bgOpacity < 0.1 ? "black" : "white" }}
+        >
+          Powerful Features
         </h2>
 
-        {/* BIG FEATURE GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-16">
+        <p
+          className="text-lg mb-40 max-w-2xl mx-auto transition-colors duration-500"
+          style={{ color: bgOpacity < 0.1 ? "#333" : "#ccc" }}
+        >
+          Built to elevate learning with AI, insights, and adaptive courses.
+        </p>
+
+        {/* APPLE STYLE STICKY CARDS */}
+        <div className="relative min-h-[260vh] w-full">
 
           {/* CARD 1 */}
-          <div className="bg-white rounded-3xl p-10 shadow-xl hover:-translate-y-3 transition transform">
-            <h3 className="text-2xl font-semibold text-gray-900">AI-Powered Learning</h3>
-            <p className="text-gray-600 mt-3 text-lg">
-              IntelliLearn adjusts to each student’s learning style using smart AI.
+          <div
+            data-aos="fade-up"
+            className="sticky top-40 max-w-3xl mx-auto p-12 rounded-3xl shadow-2xl 
+                       bg-gradient-to-br from-blue-600 to-purple-600 text-white
+                       transform transition-all"
+          >
+            <h3 className="text-3xl font-bold mb-4">AI Level Detection</h3>
+            <p className="text-lg opacity-90">
+              Instantly measures a student's starting level with high accuracy.
             </p>
           </div>
 
           {/* CARD 2 */}
-          <div className="bg-white rounded-3xl p-10 shadow-xl hover:-translate-y-3 transition transform">
-            <h3 className="text-2xl font-semibold text-gray-900">Smart Level Test</h3>
-            <p className="text-gray-600 mt-3 text-lg">
-              The system evaluates your skills and places you at the perfect starting point.
+          <div
+            data-aos="fade-up"
+            data-aos-delay="400"
+            className="sticky top-40 mt-[40vh] max-w-3xl mx-auto p-12 rounded-3xl 
+                       shadow-2xl bg-gradient-to-br from-purple-600 to-orange-500 text-white
+                       transform transition-all"
+          >
+            <h3 className="text-3xl font-bold mb-4">Adaptive Learning Path</h3>
+            <p className="text-lg opacity-90">
+              Content automatically adjusts as the student progresses.
             </p>
           </div>
 
           {/* CARD 3 */}
-          <div className="bg-white rounded-3xl p-10 shadow-xl hover:-translate-y-3 transition transform">
-            <h3 className="text-2xl font-semibold text-gray-900">Personalized Courses</h3>
-            <p className="text-gray-600 mt-3 text-lg">
-              Content & practice tailored exactly for your learning path.
+          <div
+            data-aos="fade-up"
+            data-aos-delay="800"
+            className="sticky top-40 mt-[80vh] max-w-3xl mx-auto p-12 rounded-3xl 
+                       shadow-2xl bg-gradient-to-br from-yellow-500 to-red-500 text-white
+                       transform transition-all"
+          >
+            <h3 className="text-3xl font-bold mb-4">Smart Analytics</h3>
+            <p className="text-lg opacity-90">
+              Real-time dashboards track goals, performance, and progress.
             </p>
           </div>
 
