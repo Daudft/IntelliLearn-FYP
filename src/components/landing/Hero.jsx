@@ -15,9 +15,10 @@ export default function Hero() {
       {/* <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent"></div> */}
 
       {/* CONTENT */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 pt-24 md:pt-40 pb-52">
+      <div className="relative z-10 max-w-5xl px-6 md:pl-40 pt-24 md:pt-40 pb-52">
 
-        <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+
+        <h1 className=" text-5xl md:text-6xl font-bold text-gray-800 leading-tight">
           Expert insights.
           <br />
           Custom solutions.
@@ -30,15 +31,25 @@ export default function Hero() {
         </p>
 
         {/* BUTTONS */}
-        <div className="flex items-center gap-4 mt-8">
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-7 py-3 rounded-xl transition">
-            Book a Call
-          </button>
+       {/* SINGLE GET STARTED BUTTON */}
+<div className="mt-8">
+  <button className="bg-[#E6FF03] text-black font-semibold px-8 py-3 rounded-xl flex items-center gap-2 text-lg">
+    Get Started
+    <span className="w-4 h-4">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+    strokeWidth="2"
+    stroke="currentColor"
+  >
+    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+  </svg>
+</span>
 
-          <button className="border border-gray-300 hover:bg-gray-100 text-gray-700 font-medium px-7 py-3 rounded-xl transition">
-            Our Work
-          </button>
-        </div>
+  </button>
+</div>
+
 
         {/* PEOPLE + TRUST */}
         <div className="flex items-center gap-4 mt-10">

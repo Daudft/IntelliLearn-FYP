@@ -41,38 +41,34 @@ export default function Features() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  /* ⭐ Mouse grid glow interaction */
   useEffect(() => {
-    const grid = document.getElementById("premium-grid");
-    if (!grid) return;
+  const grid = document.getElementById("premium-grid");
+  if (!grid) return;
 
-    const handleMove = (e) => {
-      const rect = grid.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+  const handleMove = (e) => {
+    const rect = grid.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
 
-      const moveX = (x - rect.width / 2) * 0.01;
-      const moveY = (y - rect.height / 2) * 0.01;
-      grid.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    grid.style.setProperty("--x", `${x}px`);
+    grid.style.setProperty("--y", `${y}px`);
+    grid.classList.add("grid-glow");
+  };
 
-      grid.style.setProperty("--x", `${x}px`);
-      grid.style.setProperty("--y", `${y}px`);
-      grid.classList.add("grid-glow");
-    };
+  const removeGlow = () => {
+    grid.classList.remove("grid-glow");
+  };
 
-    const removeGlow = () => {
-      grid.classList.remove("grid-glow");
-      grid.style.transform = "translate(0px, 0px)";
-    };
+  grid.addEventListener("mousemove", handleMove);
+  grid.addEventListener("mouseleave", removeGlow);
 
-    window.addEventListener("mousemove", handleMove);
-    window.addEventListener("mouseleave", removeGlow);
+  return () => {
+    grid.removeEventListener("mousemove", handleMove);
+    grid.removeEventListener("mouseleave", removeGlow);
+  };
+}, []);
 
-    return () => {
-      window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("mouseleave", removeGlow);
-    };
-  }, []);
+
 
   /* ⭐ Hover drift effect */
   const handleMouseMove = (e, i) => {
@@ -89,12 +85,12 @@ export default function Features() {
   };
 
   return (
-    <section className="relative w-full bg-black text-white pt-[180px] pb-[250px] px-6 md:px-20 overflow-hidden">
+    <section className="relative  w-full bg-black text-white pt-[180px] pb-[250px] px-6 md:px-20 overflow-hidden">
 
       {/* ⭐ BACKGROUND GRID */}
       <div 
         id="premium-grid"
-        className="absolute inset-0 pointer-events-none opacity-[0.35]"
+        className="absolute inset-0  opacity-[0.35]"
       ></div>
 
       {/* ⭐ RANDOM PARTICLES */}
@@ -137,12 +133,12 @@ export default function Features() {
                   }`}
                 >
                   {/* DOT + TITLE */}
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4">
                     {/* ⭐ Animated Dot */}
                     <div
                       className={`
                         w-3 h-3 rounded-full transition-all duration-500 
-                        ${active === i ? "bg-blue-500 shadow-[0_0_12px_rgba(0,120,255,0.8)] scale-125" : "bg-gray-600"}
+                        ${active === i ? "bg-green-500 shadow-[0_0_12px_rgba(0,120,255,0.8)] scale-100" : "bg-gray-600"}
                       `}
                     ></div>
 
@@ -191,26 +187,26 @@ export default function Features() {
 
       {/* ⭐ EXTRA CSS */}
       <style>{`
-        #premium-grid {
-          background-image:
-            linear-gradient(to right, rgba(255,255,255,0.18) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.18) 1px, transparent 1px);
-          background-size: 90px 90px;
-          transition: transform 0.15s ease-out;
-        }
+  #premium-grid {
+  --grid-opacity: 0.07;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,var(--grid-opacity)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,var(--grid-opacity)) 1px, transparent 1px);
+  background-size: 90px 90px;
+  transition: background-image 0.2s ease-out;
+}
 
-        #premium-grid.grid-glow {
-          background-image:
-            radial-gradient(circle at var(--x) var(--y), rgba(255,255,255,0.06), transparent 40%),
-            linear-gradient(to right, rgba(255,255,255,0.18) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.18) 1px, transparent 1px);
-        }
+/* Glow effect on the GRID LINES (THIS is the missing piece!) */
+#premium-grid.grid-glow {
+  --grid-opacity: 0.25; /* <-- glow strength */
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,var(--grid-opacity)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,var(--grid-opacity)) 1px, transparent 1px),
+    radial-gradient(circle at var(--x) var(--y), rgba(255,255,255,0.12), transparent 40%);
+}
 
-        @keyframes smoothFloat {
-          0% { transform: translateY(0px) scale(1); }
-          50% { transform: translateY(-8px) scale(1.01); }
-          100% { transform: translateY(0px) scale(1); }
-        }
+
+
       `}</style>
     </section>
   );
