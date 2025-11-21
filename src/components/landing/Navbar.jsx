@@ -18,10 +18,23 @@ export default function Navbar() {
           <li className="cursor-pointer hover:text-black">Courses</li>
         </ul>
 
-        {/* Button (RIGHT CORNER) */}
-        <button className="hidden md:block bg-yellow-400 hover:bg-yellow-500  px-6 py-2.5 rounded-xl transition">
-          Get Started
-        </button>
+        {/* RIGHT SIDE BUTTONS */}
+        <div className="hidden md:flex items-center space-x-4">
+          
+          {/* Sign In (simple text button) */}
+         <button className="px-5 py-2 bg-[#F5F5F5] rounded-xl text-gray-800 font-medium">
+  Sign In
+</button>
+
+
+
+
+          {/* Sign Up (highlight button) */}
+          <button className="bg-[#E6FF03] font-semibold px-6 py-2.5 rounded-xl  ">
+            Sign Up
+          </button>
+
+        </div>
 
         {/* Mobile Menu Icon */}
         <div className="md:hidden">
