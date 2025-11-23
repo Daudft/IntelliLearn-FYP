@@ -26,7 +26,7 @@ export default function Footer() {
             viewport={{ once: true }}
           >
             Ready to transform <br />
-            <span className="bg-gradient-to-r from-yellow-300 via-green-400 to-lime-300 text-transparent bg-clip-text">
+            <span className="bg-linear-to-r from-yellow-300 via-green-400 to-lime-300 text-transparent bg-clip-text">
               your learning experience?
             </span>
           </motion.h2>
@@ -42,7 +42,7 @@ export default function Footer() {
           </motion.p>
           
           <motion.button
-            className="px-8 py-4 bg-gradient-to-r from-yellow-300 via-green-400 to-lime-300 text-black font-bold rounded-2xl hover:shadow-2xl hover:shadow-green-400/50 transition-all text-lg inline-flex items-center gap-2"
+            className="px-8 py-4 bg-linear-to-r from-yellow-300 via-green-400 to-lime-300 text-black font-bold rounded-2xl hover:shadow-2xl hover:shadow-green-400/50 transition-all text-lg inline-flex items-center gap-2"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             initial={{ opacity: 0, y: 10 }}
@@ -56,7 +56,7 @@ export default function Footer() {
 
         {/* Divider */}
         <motion.div
-          className="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-16"
+          className="w-full h-px bg-linear-to-r from-transparent via-white/20 to-transparent mb-16"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
@@ -75,7 +75,7 @@ export default function Footer() {
           >
             <div className="mb-4">
               <h3 className="text-3xl font-bold">
-                <span className="bg-gradient-to-r from-yellow-300 to-green-400 text-transparent bg-clip-text">
+                <span className="bg-linear-to-r from-yellow-300 to-green-400 text-transparent bg-clip-text">
                   Intelli
                 </span>
                 Learn

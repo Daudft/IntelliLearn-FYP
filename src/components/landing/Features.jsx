@@ -141,7 +141,7 @@ export default function Features() {
 
                 <div className="relative w-full h-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
                   
-                  <div className="absolute inset-0 bg-gradient-to-tr from-black/60 via-transparent to-transparent z-20 pointer-events-none" />
+                  <div className="absolute inset-0 bg-linear-to-tr from-black/60 via-transparent to-transparent z-20 pointer-events-none" />
                   
                   {/* IMAGE STACK */}
                   {features.map((feature, index) => (
