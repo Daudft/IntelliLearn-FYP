@@ -1,7 +1,128 @@
+import { motion } from "framer-motion";
+
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <div>
-      Footer
-    </div>
+    <footer className="relative w-full bg-black text-white py-20 overflow-hidden rounded-2xl my-5 border border-white/10">
+      
+      
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-10">
+        
+        {/* Main CTA Section */}
+        <motion.div
+          className="text-center mb-20"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <motion.h2
+            className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 leading-tight"
+            initial={{ opacity: 0, y: -30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
+            Ready to transform <br />
+            <span className="bg-gradient-to-r from-yellow-300 via-green-400 to-lime-300 text-transparent bg-clip-text">
+              your learning experience?
+            </span>
+          </motion.h2>
+          
+          <motion.p
+            className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: -10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            Gain an edge with our exclusive learning platform, designed to provide you with tailored insights and guidance across every industry and subject.
+          </motion.p>
+          
+          <motion.button
+            className="px-8 py-4 bg-gradient-to-r from-yellow-300 via-green-400 to-lime-300 text-black font-bold rounded-2xl hover:shadow-2xl hover:shadow-green-400/50 transition-all text-lg inline-flex items-center gap-2"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            Get Started Now →
+          </motion.button>
+        </motion.div>
+
+        {/* Divider */}
+        <motion.div
+          className="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-16"
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          viewport={{ once: true }}
+        />
+
+        {/* Brand & Contact Section */}
+        <div className="text-center mb-12">
+          {/* Brand - Center */}
+          <motion.div
+            className="mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="mb-4">
+              <h3 className="text-3xl font-bold">
+                <span className="bg-gradient-to-r from-yellow-300 to-green-400 text-transparent bg-clip-text">
+                  Intelli
+                </span>
+                Learn
+              </h3>
+            </div>
+            <p className="text-gray-400 text-sm leading-relaxed max-w-md mx-auto">
+              Transforming education through AI-powered learning experiences and personalized insights.
+            </p>
+          </motion.div>
+
+          {/* Contact - Under Brand */}
+          <motion.div
+            className="flex justify-center items-center gap-2 pt-2"
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <span className="text-lg">✉️</span>
+            <a href="mailto:support@intellilearn.ai" className="text-white hover:text-green-400 transition font-semibold text-sm">
+              support@intellilearn.ai
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Bottom Footer Links */}
+        <motion.div
+          className="flex flex-col md:flex-row justify-between items-center pt-12 border-t border-white/10"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <p className="text-gray-400 text-sm">
+            © {currentYear} IntelliLearn. All rights reserved.
+          </p>
+          
+          <div className="flex gap-8 mt-6 md:mt-0">
+            <a href="#" className="text-gray-400 hover:text-green-400 transition text-sm">
+              Privacy Policy
+            </a>
+            <a href="#" className="text-gray-400 hover:text-green-400 transition text-sm">
+              Terms & Conditions
+            </a>
+          </div>
+        </motion.div>
+      </div>
+    </footer>
   );
 }

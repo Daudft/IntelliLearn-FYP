@@ -1,6 +1,6 @@
 export default function Navbar() {
   return (
-    <div className="w-full bg-[#F1F2F4] py-4 px-4">
+    <div className="w-full bg-[#F1F2F4] py-4">
 
       {/* FULL WIDTH WHITE NAVBAR */}
       <nav className="w-full bg-white rounded-2xl shadow-sm px-8 py-4 flex items-center justify-between">
