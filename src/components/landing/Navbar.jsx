@@ -6,7 +6,7 @@ export default function Navbar() {
       <nav className="w-full bg-white rounded-2xl shadow-sm px-8 py-4 flex items-center justify-between">
 
         {/* Logo (LEFT CORNER) */}
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className=" text-2xl font-bold text-gray-800">
           IntelliLearn
         </h1>
 
@@ -22,7 +22,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center space-x-4">
           
           {/* Sign In (simple text button) */}
-         <button className="px-5 py-2 bg-[#F5F5F5] rounded-xl text-gray-800 font-medium">
+         <button className=" px-5 py-2 bg-[#F5F5F5] rounded-xl text-gray-800 font-medium">
   Sign In
 </button>
 

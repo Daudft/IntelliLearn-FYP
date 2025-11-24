@@ -58,22 +58,6 @@ export default function Features() {
     },
   ];
 
-  useEffect(() => {
-    const grid = gridRef.current;
-    if (!grid) return;
-
-    const handleMove = (e) => {
-      const rect = grid.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      grid.style.setProperty("--x", `${x}px`);
-      grid.style.setProperty("--y", `${y}px`);
-    };
-
-    grid.addEventListener("mousemove", handleMove);
-    return () => grid.removeEventListener("mousemove", handleMove);
-  }, []);
-
   return (
     <div> 
       <section 
@@ -83,23 +67,19 @@ export default function Features() {
         {/* BACKGROUND GRIDS */}
         <div
           ref={gridRef}
-          className="absolute inset-0 opacity-30 pointer-events-auto"
+          className="absolute inset-0 opacity-5 pointer-events-none"
           style={{
             backgroundImage: `
-              linear-gradient(to right, rgba(34,197,94,0.6) 1px, transparent 1px),
-              linear-gradient(to bottom, rgba(34,197,94,0.6) 1px, transparent 1px)
+              linear-gradient(to right, rgba(255,255,255,0.8) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.8) 1px, transparent 1px)
             `,
             backgroundSize: "60px 60px",
-            maskImage:
-              "radial-gradient(400px circle at var(--x) var(--y), black 40%, transparent 100%)",
-            WebkitMaskImage:
-              "radial-gradient(400px circle at var(--x) var(--y), black 40%, transparent 100%)",
           }}
         ></div>
 
-        <div className="absolute inset-0 opacity-15 pointer-events-none"
+        <div className="absolute inset-0 opacity-3 pointer-events-none"
           style={{
-            backgroundImage: `linear-gradient(to right, rgba(34,197,94,0.4) 1px, transparent 1px), linear-gradient(to bottom, rgba(34,197,94,0.4) 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(to right, rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.6) 1px, transparent 1px)`,
             backgroundSize: "60px 60px",
           }}
         />
@@ -137,11 +117,11 @@ export default function Features() {
             <div className="hidden lg:flex flex-1 sticky top-0 items-start justify-center pt-0">
               
               <div className="relative w-full max-w-[450px] h-[480px]">
-                <div className="absolute -inset-5 bg-[#E6FF03]/5 blur-[60px] rounded-full pointer-events-none" />
+                <div className="absolute -inset-5 bg-gradient-to-b from-green-500/30 to-transparent blur-[80px] rounded-full pointer-events-none" />
 
-                <div className="relative w-full h-full bg-[#0a0a0a] border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+                <div className="relative w-full h-full bg-[#0a0a0a] border border-white/20 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-sm">
                   
-                  <div className="absolute inset-0 bg-linear-to-tr from-black/60 via-transparent to-transparent z-20 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-transparent z-20 pointer-events-none" />
                   
                   {/* IMAGE STACK */}
                   {features.map((feature, index) => (
