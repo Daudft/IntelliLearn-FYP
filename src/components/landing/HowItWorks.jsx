@@ -56,7 +56,7 @@ export default function HowItWorks() {
         {/* BACKGROUND GRIDS */}
         <div
           ref={gridRef}
-          className="absolute inset-0 opacity-10 pointer-events-auto"
+          className="absolute inset-0 opacity-20 pointer-events-auto"
           style={{
             backgroundImage: `
               linear-gradient(to right, rgba(34,197,94,0.4) 1px, transparent 1px),
@@ -64,9 +64,9 @@ export default function HowItWorks() {
             `,
             backgroundSize: "60px 60px",
             maskImage:
-              "radial-gradient(400px circle at var(--x) var(--y), black 40%, transparent 100%)",
+              "linear-gradient(to bottom, black 0%, black 35%, transparent 55%)",
             WebkitMaskImage:
-              "radial-gradient(400px circle at var(--x) var(--y), black 40%, transparent 100%)",
+              "linear-gradient(to bottom, black 0%, black 35%, transparent 55%)",
           }}
         ></div>
 
@@ -116,17 +116,17 @@ export default function HowItWorks() {
                     className="relative group"
                   >
                     {/* Hover Glow Effect */}
-                    <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400/20 to-green-400/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute -inset-1 bg-gradient-to-r from-yellow-300/20 to-green-300/20 rounded-2xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     
                     {/* Card */}
                     <motion.div 
-                      className="relative p-10 bg-white backdrop-blur border border-gray-200 rounded-2xl hover:border-yellow-400 hover:shadow-lg transition-all duration-300 h-full"
+                      className="relative p-10 bg-white backdrop-blur border border-gray-200 rounded-2xl hover:border-yellow-200 hover:shadow-md transition-all duration-300 h-full"
                       whileHover={{ y: -5, transition: { duration: 0.2 } }}
                     >
                       
                       {/* Step Number */}
                       <motion.div 
-                        className="text-5xl font-bold text-yellow-400/30 mb-4"
+                        className="text-5xl font-bold text-yellow-300/60 mb-4"
                         initial={{ scale: 0.8, opacity: 0 }}
                         whileInView={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -137,7 +137,7 @@ export default function HowItWorks() {
 
                       {/* Icon */}
                       <motion.div 
-                        className="mb-4 p-3 bg-yellow-100 rounded-lg w-fit text-3xl"
+                        className="mb-4 p-3 bg-gradient-to-br from-yellow-200 to-yellow-100 rounded-lg w-fit text-3xl"
                         initial={{ scale: 0, rotate: -90 }}
                         whileInView={{ scale: 1, rotate: 0 }}
                         transition={{ duration: 0.5, delay: index * 0.1 + 0.1, type: "spring" }}
@@ -172,7 +172,7 @@ export default function HowItWorks() {
                       {/* Arrow Connector */}
                       {index < steps.length - 1 && (
                         <motion.div 
-                          className="hidden lg:block absolute -right-8 top-1/2 transform -translate-y-1/2 text-2xl text-yellow-400/40"
+                          className="hidden lg:block absolute -right-8 top-1/2 transform -translate-y-1/2 text-2xl text-yellow-300/40"
                           initial={{ opacity: 0, x: -10 }}
                           whileInView={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
