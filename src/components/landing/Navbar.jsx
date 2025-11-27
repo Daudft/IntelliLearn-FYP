@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Navbar() {
   return (
     <div className="w-full bg-[#F1F2F4] py-4">
@@ -6,9 +8,12 @@ export default function Navbar() {
       <nav className="w-full bg-white rounded-2xl shadow-sm px-8 py-4 flex items-center justify-between">
 
         {/* Logo (LEFT CORNER) */}
-        <h1 className=" text-2xl font-bold text-gray-800">
-          IntelliLearn
-        </h1>
+        <Link to="/">
+  <h1 className="text-2xl font-bold text-gray-800 cursor-pointer">
+    IntelliLearn
+  </h1>
+</Link>
+
 
         {/* Center Links */}
         <ul className="hidden md:flex items-center space-x-10 text-gray-700 font-medium">
@@ -22,17 +27,23 @@ export default function Navbar() {
         <div className="hidden md:flex items-center space-x-4">
           
           {/* Sign In (simple text button) */}
-         <button className=" px-5 py-2 bg-[#F5F5F5] rounded-xl text-gray-800 font-medium">
-  Sign In
-</button>
+         <Link to="/signin">
+  <button className="px-5 py-2 bg-[#F5F5F5] rounded-xl text-gray-800 font-medium">
+    Sign In
+  </button>
+</Link>
+
 
 
 
 
           {/* Sign Up (highlight button) */}
-          <button className="bg-[#E6FF03] font-semibold px-6 py-2.5 rounded-xl  ">
-            Sign Up
-          </button>
+         <Link to="/signup">
+  <button className="bg-[#E6FF03] font-semibold px-6 py-2.5 rounded-xl">
+    Sign Up
+  </button>
+</Link>
+
 
         </div>
 

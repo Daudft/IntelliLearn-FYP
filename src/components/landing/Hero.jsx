@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Hero() {
   return (
     <section className="relative w-full overflow-hidden rounded-2xl">
@@ -33,21 +35,23 @@ export default function Hero() {
         {/* BUTTONS */}
        {/* SINGLE GET STARTED BUTTON */}
 <div className="mt-8">
+ <Link to="/signup">
   <button className="bg-[#E6FF03] text-black font-semibold px-8 py-3 rounded-xl flex items-center gap-2 text-lg">
     Get Started
     <span className="w-4 h-4">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    strokeWidth="2"
-    stroke="currentColor"
-  >
-    <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-  </svg>
-</span>
-
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth="2"
+        stroke="currentColor"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+      </svg>
+    </span>
   </button>
+</Link>
+
 </div>
 
 
