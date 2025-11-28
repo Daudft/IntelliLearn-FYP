@@ -1,136 +1,106 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import authService from "../../services/authService";
 
-export default function ResetPassword() {
+export default function VerifyEmail() {
   const { token } = useParams(); // Get token from URL
   const navigate = useNavigate();
 
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+  useEffect(() => {
+    verifyEmail();
+  }, []);
 
-    // Validation
-    if (password !== passwordConfirm) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters");
-      setLoading(false);
-      return;
-    }
-
+  const verifyEmail = async () => {
     try {
-      const response = await authService.resetPassword({
-        token,
-        password,
-        passwordConfirm,
-      });
-
-      alert(response.message || "Password reset successful! You can now sign in.");
-      navigate("/signin");
+      const response = await authService.verifyEmail({ token });
+      
+      setSuccess(true);
+      setLoading(false);
+      
+      // Redirect to home/dashboard after 3 seconds
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
       
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Failed to reset password. The link may be expired.";
+      const errorMessage = err.response?.data?.message || "Verification failed. The link may be invalid or expired.";
       setError(errorMessage);
-    } finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F1F2F4] px-4">
-      <div className="bg-white w-full max-w-md rounded-3xl shadow-xl p-10">
+      <div className="bg-white w-full max-w-md rounded-3xl shadow-xl p-10 text-center">
         
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold text-gray-900">Reset Password</h2>
-          <p className="text-gray-600 mt-3">
-            Enter your new password below.
-          </p>
-        </div>
-
-        {/* ERROR MESSAGE */}
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-            {error}
-          </div>
+        {/* LOADING STATE */}
+        {loading && (
+          <>
+            <div className="mb-6">
+              <div className="inline-block animate-spin rounded-full h-16 w-16 border-b-4 border-[#E6FF03]"></div>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Verifying Email...</h2>
+            <p className="text-gray-600">Please wait while we verify your email address.</p>
+          </>
         )}
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          
-          {/* NEW PASSWORD */}
-          <div>
-            <label className="block font-medium text-gray-800 mb-1">
-              New Password
-            </label>
-            <input
-              type="password"
-              placeholder="Enter new password (min 6 characters)"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              className="
-                w-full px-4 py-3 rounded-xl
-                border border-black/20 bg-white text-gray-900 shadow-sm
-                hover:border-black/40
-                focus:border-black focus:ring-2 focus:ring-black/10
-                focus:outline-none transition-all duration-200
-              "
-            />
-          </div>
+        {/* SUCCESS STATE */}
+        {success && (
+          <>
+            <div className="mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full">
+                <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Email Verified!</h2>
+            <p className="text-gray-600 mb-6">
+              Your email has been successfully verified. You will be redirected to the home page in 3 seconds...
+            </p>
+            <Link
+              to="/"
+              className="inline-block bg-[#E6FF03] text-black font-semibold px-6 py-3 rounded-xl 
+              hover:bg-[#d7ee00] transition-all shadow-md"
+            >
+              Go to Home Now
+            </Link>
+          </>
+        )}
 
-          {/* CONFIRM PASSWORD */}
-          <div>
-            <label className="block font-medium text-gray-800 mb-1">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              placeholder="Re-enter new password"
-              value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-              required
-              minLength={6}
-              className="
-                w-full px-4 py-3 rounded-xl
-                border border-black/20 bg-white text-gray-900 shadow-sm
-                hover:border-black/40
-                focus:border-black focus:ring-2 focus:ring-black/10
-                focus:outline-none transition-all duration-200
-              "
-            />
-          </div>
-
-          {/* SUBMIT BUTTON */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#E6FF03] text-black font-semibold text-lg py-3 rounded-xl 
-            hover:bg-[#d7ee00] transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Resetting..." : "Reset Password"}
-          </button>
-        </form>
-
-        {/* BACK TO SIGNIN */}
-        <div className="text-center mt-6">
-          <Link
-            to="/signin"
-            className="text-blue-600 font-semibold hover:underline"
-          >
-            ← Back to Sign In
-          </Link>
-        </div>
+        {/* ERROR STATE */}
+        {error && (
+          <>
+            <div className="mb-6">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full">
+                <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </div>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Verification Failed</h2>
+            <p className="text-red-600 mb-6">{error}</p>
+            <div className="space-y-3">
+              <Link
+                to="/signup"
+                className="block bg-[#E6FF03] text-black font-semibold px-6 py-3 rounded-xl 
+                hover:bg-[#d7ee00] transition-all shadow-md"
+              >
+                Sign Up Again
+              </Link>
+              <Link
+                to="/signin"
+                className="block text-blue-600 font-semibold hover:underline"
+              >
+                Back to Sign In
+              </Link>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
