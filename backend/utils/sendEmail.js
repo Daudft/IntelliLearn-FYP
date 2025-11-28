@@ -1,35 +1,28 @@
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
+const nodemailer = require('nodemailer');
 
-dotenv.config();
+const sendEmail = async (email, subject, message) => {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  });
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,   // Your Gmail
-    pass: process.env.EMAIL_PASS,   // App Password
-  },
-});
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: subject,
+    html: message,
+  };
 
-/**
- * Send an email
- * @param {string} to - Receiver email
- * @param {string} subject - Email subject
- * @param {string} html - Email HTML content
- */
-const sendEmail = async (to, subject, html) => {
   try {
-    await transporter.sendMail({
-      from: `"IntelliLearn" <${process.env.EMAIL_USER}>`,
-      to,
-      subject,
-      html,
-    });
-
-    console.log("📧 Email sent to:", to);
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully to:', email);
   } catch (error) {
-    console.error("❌ Email send error:", error);
+    console.log('Email error:', error);
+    throw error;
   }
 };
 
-export default sendEmail;
+module.exports = sendEmail;

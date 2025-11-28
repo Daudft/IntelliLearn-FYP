@@ -1,46 +1,38 @@
-// server.js
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import mongoose from "mongoose";
-import authRoutes from "./routes/authRoutes.js";
+const express = require('express');
+const dotenv = require('dotenv');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const connectDB = require('./config/database');
+const authRoutes = require('./routes/authRoutes');
 
 dotenv.config();
 
 const app = express();
 
-// --------------------------
-// 🔥 Middleware
-// --------------------------
+// Connect to database
+connectDB();
+
+// Middleware
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true, // Allow cookies
+}));
 app.use(express.json());
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  })
-);
+app.use(cookieParser());
 
-// --------------------------
-// 🔥 Connect MongoDB
-// --------------------------
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log("MongoDB Error:", err));
+// Routes
+app.use('/api/auth', authRoutes);
 
-// --------------------------
-// 🔥 API Routes
-// --------------------------
-app.use("/api/auth", authRoutes);
-
-// Default route
-app.get("/", (req, res) => {
-  res.send("IntelliLearn Backend Running...");
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ message: 'Server is running' });
 });
 
-// --------------------------
-// 🔥 Start Server
-// --------------------------
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../api/axios";
-
-
+import authService from "../../services/authService";
 
 export default function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [lang, setLang] = useState("python");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -49,25 +50,32 @@ int main() {
   };
 
   // ---------------------------------------
-  // ✅ BACKEND SIGNUP API
+  // ✅ UPDATED SIGNUP FUNCTION
   // ---------------------------------------
   const handleSignUp = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
-      const response = await api.post("/signup", {
+      const response = await authService.signup({
         name,
         email,
         password,
+        passwordConfirm,
       });
 
-      alert(response.data.message || "Signup successful!");
+      alert(response.message || "Signup successful! Please check your email to verify your account.");
 
-      // Redirect user to VERIFY EMAIL page
-      navigate("/verify-email");
-    } catch (error) {
-      alert(error.response?.data?.message || "Signup failed");
-      console.error(error);
+      // Redirect to signin page
+      navigate("/signin");
+      
+    } catch (err) {
+      const errorMessage = err.response?.data?.message || "Signup failed. Please try again.";
+      setError(errorMessage);
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -82,6 +90,13 @@ int main() {
             Join IntelliLearn and start improving your skills.
           </p>
 
+          {/* ERROR MESSAGE */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
+
           <form className="space-y-6" onSubmit={handleSignUp}>
             {/* NAME */}
             <div>
@@ -91,6 +106,7 @@ int main() {
                 placeholder="Enter your name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
                 className="
                   w-full px-4 py-3 rounded-xl
                   border border-black/20
@@ -110,6 +126,7 @@ int main() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
                 className="
                   w-full px-4 py-3 rounded-xl
                   border border-black/20 bg-white text-gray-900 shadow-sm
@@ -125,9 +142,31 @@ int main() {
               <label className="block font-medium text-gray-800 mb-1">Password</label>
               <input
                 type="password"
-                placeholder="Create a strong password"
+                placeholder="Create a strong password (min 6 characters)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className="
+                  w-full px-4 py-3 rounded-xl
+                  border border-black/20 bg-white text-gray-900 shadow-sm
+                  hover:border-black/40
+                  focus:border-black focus:ring-2 focus:ring-black/10
+                  focus:outline-none transition-all
+                "
+              />
+            </div>
+
+            {/* CONFIRM PASSWORD */}
+            <div>
+              <label className="block font-medium text-gray-800 mb-1">Confirm Password</label>
+              <input
+                type="password"
+                placeholder="Re-enter your password"
+                value={passwordConfirm}
+                onChange={(e) => setPasswordConfirm(e.target.value)}
+                required
+                minLength={6}
                 className="
                   w-full px-4 py-3 rounded-xl
                   border border-black/20 bg-white text-gray-900 shadow-sm
@@ -141,10 +180,11 @@ int main() {
             {/* BUTTON */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-[#E6FF03] text-black font-semibold text-lg py-3 rounded-xl 
-              hover:bg-[#d7ee00] transition-all shadow-md"
+              hover:bg-[#d7ee00] transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 
