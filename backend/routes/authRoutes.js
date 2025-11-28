@@ -9,19 +9,19 @@ import {
 
 const router = express.Router();
 
-// SIGNUP
+// Signup
 router.post("/signup", signup);
 
-// LOGIN (frontend calls /login)
-router.post("/login", signin);
-
-// VERIFY EMAIL (token from URL)
+// Email verification (frontend uses GET + token in URL)
 router.get("/verify-email/:token", verifyEmail);
 
-// FORGOT PASSWORD
+// Signin (frontend calls /login)
+router.post("/login", signin);
+
+// Forgot Password
 router.post("/forgot-password", forgotPassword);
 
-// RESET PASSWORD WITH TOKEN
+// Reset Password (frontend sends token param)
 router.post("/reset-password/:token", resetPassword);
 
 export default router;

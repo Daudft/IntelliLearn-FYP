@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 
+
+
 export default function VerifyEmail() {
   const { token } = useParams();
   const navigate = useNavigate();
