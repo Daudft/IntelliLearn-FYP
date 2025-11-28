@@ -1,72 +1,72 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../../api/axios";
 
 
 
-export default function SignUp() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [lang, setLang] = useState("python");
-
+export default function ResetPassword() {
+  const { token } = useParams(); // get token from URL
   const navigate = useNavigate();
+
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [lang, setLang] = useState("python");
 
   const codeSamples = {
     python: `
-# PYTHON
-user = {
-    "name": "${name || "Guest"}",
-    "skills": ["Python", "AI", "Backend"]
-}
+# PYTHON RESET
+token = "${token || "reset_token"}"
+password = "●●●●●●●"
 
-def start_learning():
-    return "Welcome to IntelliLearn"
+def reset_password(token, password):
+    return "Password Updated!"
 
-print(start_learning())
+print(reset_password(token, password))
 `,
     java: `
-/* JAVA */
-class User {
-    String name = "${name || "Guest"}";
-    String[] skills = {"Java", "OOP", "Spring"};
+/* JAVA RESET */
+class Reset {
+    static String token = "${token || "reset_token"}";
+    static String password = "********";
 
-    void startLearning() {
-        System.out.println("Welcome to IntelliLearn");
+    static void applyReset() {
+        System.out.println("Password Updated!");
     }
 }
 `,
     c: `
-/* C LANGUAGE */
+/* C RESET */
 #include <stdio.h>
 
 int main() {
-    char name[] = "${name || "Guest"}";
-    printf("Welcome to IntelliLearn, %s!\\n", name);
+    char token[] = "${token || "reset_token"}";
+    printf("Password Updated!\\n");
     return 0;
 }
 `,
   };
 
-  // ---------------------------------------
-  // ✅ BACKEND SIGNUP API
-  // ---------------------------------------
-  const handleSignUp = async (e) => {
+  // ------------------------------------
+  // ✅ SEND NEW PASSWORD TO BACKEND
+  // ------------------------------------
+  const handleReset = async (e) => {
     e.preventDefault();
 
+    if (password !== confirmPassword) {
+      alert("❌ Passwords do not match");
+      return;
+    }
+
     try {
-      const response = await api.post("/signup", {
-        name,
-        email,
-        password,
-      });
+      const res = await api.post(`/reset-password/${token}`, { password });
 
-      alert(response.data.message || "Signup successful!");
+      alert(res.data.message || "Password updated successfully");
 
-      // Redirect user to VERIFY EMAIL page
-      navigate("/verify-email");
+      // redirect to login page
+      navigate("/signin");
+
     } catch (error) {
-      alert(error.response?.data?.message || "Signup failed");
+      alert(error.response?.data?.message || "Something went wrong");
       console.error(error);
     }
   };
@@ -75,57 +75,23 @@ int main() {
     <div className="min-h-screen flex items-center justify-center bg-[#F1F2F4] px-4">
       <div className="bg-white w-full max-w-6xl rounded-3xl shadow-xl flex flex-col md:flex-row overflow-hidden">
 
-        {/* LEFT FORM */}
+        {/* LEFT SIDE */}
         <div className="w-full md:w-1/2 p-10 md:p-14">
-          <h2 className="text-4xl font-bold text-gray-900">Create Account</h2>
+          <h2 className="text-4xl font-bold text-gray-900">Reset Password</h2>
           <p className="text-gray-600 mt-3 mb-10">
-            Join IntelliLearn and start improving your skills.
+            Enter your new password below.
           </p>
 
-          <form className="space-y-6" onSubmit={handleSignUp}>
-            {/* NAME */}
-            <div>
-              <label className="block font-medium text-gray-800 mb-1">Full Name</label>
-              <input
-                type="text"
-                placeholder="Enter your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="
-                  w-full px-4 py-3 rounded-xl
-                  border border-black/20
-                  bg-white text-gray-900 shadow-sm
-                  hover:border-black/40
-                  focus:border-black focus:ring-2 focus:ring-black/10
-                  focus:outline-none transition-all
-                "
-              />
-            </div>
-
-            {/* EMAIL */}
-            <div>
-              <label className="block font-medium text-gray-800 mb-1">Email Address</label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="
-                  w-full px-4 py-3 rounded-xl
-                  border border-black/20 bg-white text-gray-900 shadow-sm
-                  hover:border-black/40
-                  focus:border-black focus:ring-2 focus:ring-black/10
-                  focus:outline-none transition-all
-                "
-              />
-            </div>
+          <form className="space-y-6" onSubmit={handleReset}>
 
             {/* PASSWORD */}
             <div>
-              <label className="block font-medium text-gray-800 mb-1">Password</label>
+              <label className="block font-medium text-gray-800 mb-1">
+                New Password
+              </label>
               <input
                 type="password"
-                placeholder="Create a strong password"
+                placeholder="Enter new password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="
@@ -133,43 +99,67 @@ int main() {
                   border border-black/20 bg-white text-gray-900 shadow-sm
                   hover:border-black/40
                   focus:border-black focus:ring-2 focus:ring-black/10
-                  focus:outline-none transition-all
+                  focus:outline-none transition-all duration-200
                 "
               />
             </div>
 
-            {/* BUTTON */}
+            {/* CONFIRM PASSWORD */}
+            <div>
+              <label className="block font-medium text-gray-800 mb-1">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="
+                  w-full px-4 py-3 rounded-xl
+                  border border-black/20 bg-white text-gray-900 shadow-sm
+                  hover:border-black/40
+                  focus:border-black focus:ring-2 focus:ring-black/10
+                  focus:outline-none transition-all duration-200
+                "
+              />
+
+              <div className="text-right mt-2">
+                <Link to="/signin" className="text-blue-600 hover:underline font-medium">
+                  Back to Sign In
+                </Link>
+              </div>
+            </div>
+
             <button
               type="submit"
               className="w-full bg-[#E6FF03] text-black font-semibold text-lg py-3 rounded-xl 
               hover:bg-[#d7ee00] transition-all shadow-md"
             >
-              Create Account
+              Update Password
             </button>
           </form>
-
-          <p className="text-center mt-8 text-gray-700">
-            Already have an account?{" "}
-            <Link to="/signin" className="text-blue-600 font-semibold hover:underline">
-              Sign In
-            </Link>
-          </p>
         </div>
 
-        {/* RIGHT BLUEPRINT */}
+        {/* RIGHT BLUEPRINT PANEL */}
         <div className="hidden md:flex w-1/2 bg-[#0A0A0A] relative overflow-hidden text-white p-14">
-          <div className="absolute inset-0 opacity-[0.07]
+
+          {/* GRID */}
+          <div className="absolute inset-0 opacity-[0.07] 
               bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),
               linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)]
-              bg-[size:40px_40px] z-0" />
+              bg-[size:40px_40px] z-0">
+          </div>
 
+          {/* SHAPES */}
           <div className="absolute top-10 left-10 w-20 h-20 border border-gray-600 rounded-lg opacity-20"></div>
           <div className="absolute bottom-10 right-12 w-28 h-28 border border-gray-600 rounded-full opacity-20"></div>
           <div className="absolute top-1/2 right-20 w-16 h-16 border border-gray-600 rotate-45 opacity-20"></div>
 
+          {/* CONTENT */}
           <div className="relative z-10 w-full">
             <h3 className="text-3xl font-semibold mb-8">Learn. Build. Innovate.</h3>
 
+            {/* TABS */}
             <div className="flex gap-4 mb-6">
               {["python", "java", "c"].map((language) => (
                 <button
@@ -186,9 +176,11 @@ int main() {
               ))}
             </div>
 
+            {/* CODE BOX */}
             <div
               className="bg-black/40 rounded-xl p-6 shadow-lg w-[90%]
-              font-mono text-sm leading-relaxed text-[#E6FF03] whitespace-pre-wrap"
+              font-mono text-sm md:text-[13px] lg:text-[14px]
+              leading-relaxed text-[#E6FF03] whitespace-pre-wrap"
               style={{ height: "340px", overflow: "hidden" }}
             >
               {codeSamples[lang]}

@@ -1,10 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../api/axios";
+
+
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [lang, setLang] = useState("python");
+
+  const navigate = useNavigate();
 
   const codeSamples = {
     python: `
@@ -48,8 +53,32 @@ int main() {
 `,
   };
 
-  const handleSignIn = (e) => {
+  // ---------------------------
+  // ✅ BACKEND LOGIN FUNCTION
+  // ---------------------------
+  const handleSignIn = async (e) => {
     e.preventDefault();
+
+    try {
+      const res = await api.post("/login", {
+        email,
+        password,
+      });
+
+      alert(res.data.message || "Login successful!");
+
+      // Save JWT to local storage
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+      }
+
+      // Redirect to pre-test page
+      navigate("/pre-test");
+
+    } catch (err) {
+      alert(err.response?.data?.message || "Incorrect email or password");
+      console.error(err);
+    }
   };
 
   return (
@@ -67,7 +96,9 @@ int main() {
 
             {/* EMAIL */}
             <div>
-              <label className="block font-medium text-gray-800 mb-1">Email Address</label>
+              <label className="block font-medium text-gray-800 mb-1">
+                Email Address
+              </label>
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -85,7 +116,9 @@ int main() {
 
             {/* PASSWORD */}
             <div>
-              <label className="block font-medium text-gray-800 mb-1">Password</label>
+              <label className="block font-medium text-gray-800 mb-1">
+                Password
+              </label>
               <input
                 type="password"
                 placeholder="Enter your password"
@@ -101,12 +134,16 @@ int main() {
               />
 
               <div className="text-right mt-2">
-                <Link to="/forgot-password" className="text-blue-600 hover:underline font-medium">
+                <Link
+                  to="/forgot-password"
+                  className="text-blue-600 hover:underline font-medium"
+                >
                   Forgot Password?
                 </Link>
               </div>
             </div>
 
+            {/* BUTTON */}
             <button
               type="submit"
               className="w-full bg-[#E6FF03] text-black font-semibold text-lg py-3 rounded-xl 
@@ -118,7 +155,10 @@ int main() {
 
           <p className="text-center mt-8 text-gray-700">
             Don’t have an account?{" "}
-            <Link to="/signup" className="text-blue-600 font-semibold hover:underline">
+            <Link
+              to="/signup"
+              className="text-blue-600 font-semibold hover:underline"
+            >
               Create Account
             </Link>
           </p>
@@ -127,12 +167,13 @@ int main() {
         {/* RIGHT BLUEPRINT PANEL */}
         <div className="hidden md:flex w-1/2 bg-[#0A0A0A] relative overflow-hidden text-white p-14">
 
-          {/* GRID (Same as SignUp EXACT) */}
-          <div className="absolute inset-0 opacity-[0.07] 
+          {/* GRID */}
+          <div
+            className="absolute inset-0 opacity-[0.07] 
               bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),
               linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)]
-              bg-[size:40px_40px] z-0">
-          </div>
+              bg-[size:40px_40px] z-0"
+          ></div>
 
           {/* SHAPES */}
           <div className="absolute top-10 left-10 w-20 h-20 border border-gray-600 rounded-lg opacity-20 z-10"></div>
@@ -169,10 +210,8 @@ int main() {
             >
               {codeSamples[lang]}
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   );
