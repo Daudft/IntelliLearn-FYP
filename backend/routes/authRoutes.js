@@ -1,27 +1,22 @@
-import express from "express";
-import {
+const express = require('express');
+const router = express.Router();
+const {
   signup,
-  signin,
   verifyEmail,
+  signin,
   forgotPassword,
   resetPassword,
-} from "../controllers/authController.js";
+  logout,
+  getCurrentUser,
+} = require('../controllers/authController');
+const { protect } = require('../middleware/auth');
 
-const router = express.Router();
+router.post('/signup', signup);
+router.post('/verify-email', verifyEmail);
+router.post('/signin', signin);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
+router.post('/logout', logout);
+router.get('/me', protect, getCurrentUser);
 
-// Signup
-router.post("/signup", signup);
-
-// Email verification (frontend uses GET + token in URL)
-router.get("/verify-email/:token", verifyEmail);
-
-// Signin (frontend calls /login)
-router.post("/login", signin);
-
-// Forgot Password
-router.post("/forgot-password", forgotPassword);
-
-// Reset Password (frontend sends token param)
-router.post("/reset-password/:token", resetPassword);
-
-export default router;
+module.exports = router;

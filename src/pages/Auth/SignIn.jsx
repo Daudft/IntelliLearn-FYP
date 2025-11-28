@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../api/axios";
-
-
+import authService from "../../services/authService";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [lang, setLang] = useState("python");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
@@ -54,30 +54,27 @@ int main() {
   };
 
   // ---------------------------
-  // ✅ BACKEND LOGIN FUNCTION
+  // ✅ UPDATED LOGIN FUNCTION
   // ---------------------------
   const handleSignIn = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
-      const res = await api.post("/login", {
-        email,
-        password,
-      });
-
-      alert(res.data.message || "Login successful!");
-
-      // Save JWT to local storage
-      if (res.data.token) {
-        localStorage.setItem("token", res.data.token);
-      }
-
-      // Redirect to pre-test page
-      navigate("/pre-test");
-
+      const response = await authService.signin({ email, password });
+      
+      alert(response.message || "Login successful!");
+      
+      // Redirect to home page
+      navigate("/");
+      
     } catch (err) {
-      alert(err.response?.data?.message || "Incorrect email or password");
-      console.error(err);
+      const errorMessage = err.response?.data?.message || "Login failed. Please try again.";
+      setError(errorMessage);
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,6 +89,13 @@ int main() {
             Sign in to continue your learning journey.
           </p>
 
+          {/* ERROR MESSAGE */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
+
           <form className="space-y-6" onSubmit={handleSignIn}>
 
             {/* EMAIL */}
@@ -104,6 +108,7 @@ int main() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
                 className="
                   w-full px-4 py-3 rounded-xl
                   border border-black/20 bg-white text-gray-900 shadow-sm
@@ -124,6 +129,7 @@ int main() {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
                 className="
                   w-full px-4 py-3 rounded-xl
                   border border-black/20 bg-white text-gray-900 shadow-sm
@@ -146,15 +152,16 @@ int main() {
             {/* BUTTON */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-[#E6FF03] text-black font-semibold text-lg py-3 rounded-xl 
-              hover:bg-[#d7ee00] transition-all shadow-md"
+              hover:bg-[#d7ee00] transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign In
+              {loading ? "Signing In..." : "Sign In"}
             </button>
           </form>
 
           <p className="text-center mt-8 text-gray-700">
-            Don’t have an account?{" "}
+            Don't have an account?{" "}
             <Link
               to="/signup"
               className="text-blue-600 font-semibold hover:underline"
