@@ -1,26 +1,28 @@
-import React, { useState } from "react";
-import AuthForm from "../../components/auth/AuthForm";
+import React, { useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
 export default function VerifyEmail() {
-  const [code, setCode] = useState("");
+  const { token } = useParams();
+  const navigate = useNavigate();
 
-  const handleVerify = (e) => {
-    e.preventDefault();
-    console.log("Verification Code:", code);
-  };
+  useEffect(() => {
+    const verifyNow = async () => {
+      try {
+        const res = await api.get(`/verify-email/${token}`);
+        alert(res.data.message);
+        navigate("/signin");
+      } catch (error) {
+        alert("Invalid or expired verification link");
+      }
+    };
+
+    verifyNow();
+  }, [token]);
 
   return (
-    <AuthForm title="Verify Email">
-      <form onSubmit={handleVerify}>
-        <input
-          type="text"
-          placeholder="Enter verification code"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        />
-
-        <button type="submit">Verify</button>
-      </form>
-    </AuthForm>
+    <div className="min-h-screen flex items-center justify-center">
+      <h2 className="text-3xl font-bold">Verifying email...</h2>
+    </div>
   );
 }

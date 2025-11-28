@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
 export default function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [lang, setLang] = useState("python");
+
+  const navigate = useNavigate();
 
   const codeSamples = {
     python: `
@@ -43,8 +46,27 @@ int main() {
 `,
   };
 
-  const handleSignUp = (e) => {
+  // ---------------------------------------
+  // ✅ BACKEND SIGNUP API
+  // ---------------------------------------
+  const handleSignUp = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await api.post("/signup", {
+        name,
+        email,
+        password,
+      });
+
+      alert(response.data.message || "Signup successful!");
+
+      // Redirect user to VERIFY EMAIL page
+      navigate("/verify-email");
+    } catch (error) {
+      alert(error.response?.data?.message || "Signup failed");
+      console.error(error);
+    }
   };
 
   return (
@@ -59,7 +81,6 @@ int main() {
           </p>
 
           <form className="space-y-6" onSubmit={handleSignUp}>
-            
             {/* NAME */}
             <div>
               <label className="block font-medium text-gray-800 mb-1">Full Name</label>
@@ -71,15 +92,10 @@ int main() {
                 className="
                   w-full px-4 py-3 rounded-xl
                   border border-black/20
-                  bg-white 
-                  text-gray-900 
-                  shadow-sm
+                  bg-white text-gray-900 shadow-sm
                   hover:border-black/40
-                  focus:border-black 
-                  focus:ring-2 
-                  focus:ring-black/10
-                  focus:outline-none
-                  transition-all duration-200
+                  focus:border-black focus:ring-2 focus:ring-black/10
+                  focus:outline-none transition-all
                 "
               />
             </div>
@@ -94,16 +110,10 @@ int main() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="
                   w-full px-4 py-3 rounded-xl
-                  border border-black/20
-                  bg-white 
-                  text-gray-900 
-                  shadow-sm
+                  border border-black/20 bg-white text-gray-900 shadow-sm
                   hover:border-black/40
-                  focus:border-black 
-                  focus:ring-2 
-                  focus:ring-black/10
-                  focus:outline-none
-                  transition-all duration-200
+                  focus:border-black focus:ring-2 focus:ring-black/10
+                  focus:outline-none transition-all
                 "
               />
             </div>
@@ -118,16 +128,10 @@ int main() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="
                   w-full px-4 py-3 rounded-xl
-                  border border-black/20
-                  bg-white 
-                  text-gray-900 
-                  shadow-sm
+                  border border-black/20 bg-white text-gray-900 shadow-sm
                   hover:border-black/40
-                  focus:border-black 
-                  focus:ring-2 
-                  focus:ring-black/10
-                  focus:outline-none
-                  transition-all duration-200
+                  focus:border-black focus:ring-2 focus:ring-black/10
+                  focus:outline-none transition-all
                 "
               />
             </div>
@@ -135,7 +139,8 @@ int main() {
             {/* BUTTON */}
             <button
               type="submit"
-              className="w-full bg-[#E6FF03] text-black font-semibold text-lg py-3 rounded-xl hover:bg-[#d7ee00] transition-all shadow-md"
+              className="w-full bg-[#E6FF03] text-black font-semibold text-lg py-3 rounded-xl 
+              hover:bg-[#d7ee00] transition-all shadow-md"
             >
               Create Account
             </button>
@@ -149,26 +154,20 @@ int main() {
           </p>
         </div>
 
-        {/* RIGHT BLUEPRINT PANEL */}
+        {/* RIGHT BLUEPRINT */}
         <div className="hidden md:flex w-1/2 bg-[#0A0A0A] relative overflow-hidden text-white p-14">
-
-          {/* GRID */}
-          <div className="absolute inset-0 opacity-[0.07] 
+          <div className="absolute inset-0 opacity-[0.07]
               bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),
               linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)]
-              bg-[size:40px_40px] z-0">
-          </div>
+              bg-[size:40px_40px] z-0" />
 
-          {/* SHAPES */}
           <div className="absolute top-10 left-10 w-20 h-20 border border-gray-600 rounded-lg opacity-20"></div>
           <div className="absolute bottom-10 right-12 w-28 h-28 border border-gray-600 rounded-full opacity-20"></div>
           <div className="absolute top-1/2 right-20 w-16 h-16 border border-gray-600 rotate-45 opacity-20"></div>
 
-          {/* CONTENT */}
           <div className="relative z-10 w-full">
             <h3 className="text-3xl font-semibold mb-8">Learn. Build. Innovate.</h3>
 
-            {/* TABS */}
             <div className="flex gap-4 mb-6">
               {["python", "java", "c"].map((language) => (
                 <button
@@ -185,11 +184,9 @@ int main() {
               ))}
             </div>
 
-            {/* CODE BLOCK */}
             <div
               className="bg-black/40 rounded-xl p-6 shadow-lg w-[90%]
-              font-mono text-sm md:text-[13px] lg:text-[14px]
-              leading-relaxed text-[#E6FF03] whitespace-pre-wrap"
+              font-mono text-sm leading-relaxed text-[#E6FF03] whitespace-pre-wrap"
               style={{ height: "340px", overflow: "hidden" }}
             >
               {codeSamples[lang]}

@@ -1,81 +1,71 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import api from "../../api/axios"; // Backend API
+import { useParams, Link, useNavigate } from "react-router-dom";
+import api from "../../api/axios";
 
-export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [lang, setLang] = useState("python");
-
+export default function ResetPassword() {
+  const { token } = useParams(); // get token from URL
   const navigate = useNavigate();
+
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [lang, setLang] = useState("python");
 
   const codeSamples = {
     python: `
-# PYTHON LOGIN
-email = "${email || "example@mail.com"}"
+# PYTHON RESET
+token = "${token || "reset_token"}"
 password = "●●●●●●●"
 
-def authenticate(email, password):
-    return "Login Successful!"
+def reset_password(token, password):
+    return "Password Updated!"
 
-print(authenticate(email, password))
+print(reset_password(token, password))
 `,
     java: `
-/* JAVA LOGIN */
-class Auth {
-    static String email = "${email || "user@mail.com"}";
+/* JAVA RESET */
+class Reset {
+    static String token = "${token || "reset_token"}";
     static String password = "********";
 
-    static void login() {
-        System.out.println("Login Successful!");
-    }
-}
-
-public class Main {
-    public static void main(String[] args) {
-        Auth.login();
+    static void applyReset() {
+        System.out.println("Password Updated!");
     }
 }
 `,
     c: `
-/* C LOGIN */
+/* C RESET */
 #include <stdio.h>
 
 int main() {
-    char email[] = "${email || "user@mail.com"}";
-    char password[] = "********";
-
-    printf("Login Successful!\\n");
+    char token[] = "${token || "reset_token"}";
+    printf("Password Updated!\\n");
     return 0;
 }
 `,
   };
 
-  // ---------------------------
-  // ✅ BACKEND LOGIN FUNCTION
-  // ---------------------------
-  const handleSignIn = async (e) => {
+  // ------------------------------------
+  // ✅ SEND NEW PASSWORD TO BACKEND
+  // ------------------------------------
+  const handleReset = async (e) => {
     e.preventDefault();
 
+    if (password !== confirmPassword) {
+      alert("❌ Passwords do not match");
+      return;
+    }
+
     try {
-      const res = await api.post("/login", {
-        email,
-        password,
-      });
+      const res = await api.post(`/reset-password/${token}`, { password });
 
-      alert(res.data.message || "Login successful!");
+      alert(res.data.message || "Password updated successfully");
 
-      // Save JWT to local storage
-      if (res.data.token) {
-        localStorage.setItem("token", res.data.token);
-      }
+      // redirect to login page
+      navigate("/signin");
 
-      // Redirect to pre-test page
-      navigate("/pre-test");
-
-    } catch (err) {
-      alert(err.response?.data?.message || "Incorrect email or password");
-      console.error(err);
+    } catch (error) {
+      alert(error.response?.data?.message || "Something went wrong");
+      console.error(error);
     }
   };
 
@@ -85,41 +75,21 @@ int main() {
 
         {/* LEFT SIDE */}
         <div className="w-full md:w-1/2 p-10 md:p-14">
-          <h2 className="text-4xl font-bold text-gray-900">Welcome Back</h2>
+          <h2 className="text-4xl font-bold text-gray-900">Reset Password</h2>
           <p className="text-gray-600 mt-3 mb-10">
-            Sign in to continue your learning journey.
+            Enter your new password below.
           </p>
 
-          <form className="space-y-6" onSubmit={handleSignIn}>
-
-            {/* EMAIL */}
-            <div>
-              <label className="block font-medium text-gray-800 mb-1">
-                Email Address
-              </label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="
-                  w-full px-4 py-3 rounded-xl
-                  border border-black/20 bg-white text-gray-900 shadow-sm
-                  hover:border-black/40
-                  focus:border-black focus:ring-2 focus:ring-black/10
-                  focus:outline-none transition-all duration-200
-                "
-              />
-            </div>
+          <form className="space-y-6" onSubmit={handleReset}>
 
             {/* PASSWORD */}
             <div>
               <label className="block font-medium text-gray-800 mb-1">
-                Password
+                New Password
               </label>
               <input
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Enter new password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="
@@ -130,56 +100,61 @@ int main() {
                   focus:outline-none transition-all duration-200
                 "
               />
+            </div>
+
+            {/* CONFIRM PASSWORD */}
+            <div>
+              <label className="block font-medium text-gray-800 mb-1">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="
+                  w-full px-4 py-3 rounded-xl
+                  border border-black/20 bg-white text-gray-900 shadow-sm
+                  hover:border-black/40
+                  focus:border-black focus:ring-2 focus:ring-black/10
+                  focus:outline-none transition-all duration-200
+                "
+              />
 
               <div className="text-right mt-2">
-                <Link
-                  to="/forgot-password"
-                  className="text-blue-600 hover:underline font-medium"
-                >
-                  Forgot Password?
+                <Link to="/signin" className="text-blue-600 hover:underline font-medium">
+                  Back to Sign In
                 </Link>
               </div>
             </div>
 
-            {/* BUTTON */}
             <button
               type="submit"
               className="w-full bg-[#E6FF03] text-black font-semibold text-lg py-3 rounded-xl 
               hover:bg-[#d7ee00] transition-all shadow-md"
             >
-              Sign In
+              Update Password
             </button>
           </form>
-
-          <p className="text-center mt-8 text-gray-700">
-            Don’t have an account?{" "}
-            <Link
-              to="/signup"
-              className="text-blue-600 font-semibold hover:underline"
-            >
-              Create Account
-            </Link>
-          </p>
         </div>
 
         {/* RIGHT BLUEPRINT PANEL */}
         <div className="hidden md:flex w-1/2 bg-[#0A0A0A] relative overflow-hidden text-white p-14">
 
           {/* GRID */}
-          <div
-            className="absolute inset-0 opacity-[0.07] 
+          <div className="absolute inset-0 opacity-[0.07] 
               bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),
               linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)]
-              bg-[size:40px_40px] z-0"
-          ></div>
+              bg-[size:40px_40px] z-0">
+          </div>
 
           {/* SHAPES */}
-          <div className="absolute top-10 left-10 w-20 h-20 border border-gray-600 rounded-lg opacity-20 z-10"></div>
-          <div className="absolute bottom-10 right-12 w-28 h-28 border border-gray-600 rounded-full opacity-20 z-10"></div>
-          <div className="absolute top-1/2 right-20 w-16 h-16 border border-gray-600 rotate-45 opacity-20 z-10"></div>
+          <div className="absolute top-10 left-10 w-20 h-20 border border-gray-600 rounded-lg opacity-20"></div>
+          <div className="absolute bottom-10 right-12 w-28 h-28 border border-gray-600 rounded-full opacity-20"></div>
+          <div className="absolute top-1/2 right-20 w-16 h-16 border border-gray-600 rotate-45 opacity-20"></div>
 
           {/* CONTENT */}
-          <div className="relative z-20 w-full">
+          <div className="relative z-10 w-full">
             <h3 className="text-3xl font-semibold mb-8">Learn. Build. Innovate.</h3>
 
             {/* TABS */}
@@ -208,8 +183,10 @@ int main() {
             >
               {codeSamples[lang]}
             </div>
+
           </div>
         </div>
+
       </div>
     </div>
   );
