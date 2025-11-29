@@ -29,6 +29,23 @@ const userSchema = new mongoose.Schema({
   verificationTokenExpire: Date,
   resetPasswordToken: String,
   resetPasswordTokenExpire: Date,
+  
+  // ✅ ASSESSMENT FIELDS - ADDED ONLY THESE 4 FIELDS
+  hasCompletedAssessment: {
+    type: Boolean,
+    default: false,
+  },
+  assessmentLanguage: {
+    type: String,
+    enum: ['python', 'java', 'c', null],
+    default: null,
+  },
+  proficiencyLevel: {
+    type: String,
+    enum: ['Beginner', 'Intermediate', 'Advanced', null],
+    default: null,
+  },
+  
   createdAt: {
     type: Date,
     default: Date.now,
