@@ -7,26 +7,26 @@ export default function HowItWorks() {
   const steps = [
     {
       number: "01",
-      title: "Enroll in a Course",
-      desc: "Browse through our comprehensive catalog of courses and find the perfect learning path for your goals.",
+      title: "Take Initial Assessment",
+      desc: "Start with a quick AI-powered assessment that analyzes your current skill level and learning pattern.",
       icon: "📚",
     },
     {
       number: "02",
-      title: "Learn at Your Pace",
-      desc: "Access interactive lessons, video tutorials, and hands-on projects available 24/7 from anywhere.",
+      title: "Receive Personalized Tasks",
+      desc: "Get tailored learning tasks generated instantly based on your assessment results and unique skill profile.",
       icon: "⚡",
     },
     {
       number: "03",
-      title: "Track Progress",
-      desc: "Monitor your learning journey with detailed analytics and personalized insights about your growth.",
+      title: "Learn With AI Mentor",
+      desc: "Follow helpful guidance from your AI mentor as you complete tasks and strengthen your abilities.",
       icon: "📊",
     },
     {
       number: "04",
-      title: "Earn Certificate",
-      desc: "Complete courses and earn industry-recognized certificates to showcase your new skills.",
+      title: "Track Your Progress",
+      desc: "Monitor your improvement through simple progress charts that highlight growth and guide your next steps.",
       icon: "✓",
     },
   ];
@@ -98,7 +98,7 @@ export default function HowItWorks() {
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              Simple, powerful, and intuitive. Get up and running in 4 easy steps.
+              Simple, smart, and seamless. Your learning journey in 4 easy steps.
             </motion.p>
           </div>
 
