@@ -32,7 +32,7 @@ export default function Navbar() {
             <button 
               onMouseEnter={() => setHoveredButton("signin")}
               onMouseLeave={() => setHoveredButton(null)}
-              className="relative px-5 py-2 bg-[#F5F5F5] rounded-xl text-gray-800 font-medium overflow-hidden"
+              className="relative px-5 py-2 bg-[#F5F5F5] rounded-xl text-gray-800 font-medium overflow-hidden cursor-pointer"
             >
               <span className={`inline-block transition-all duration-500 ${hoveredButton === "signin" ? "-translate-y-6 opacity-0" : "translate-y-0 opacity-100"}`}>
                 Sign In
@@ -48,7 +48,7 @@ export default function Navbar() {
             <button 
               onMouseEnter={() => setHoveredButton("signup")}
               onMouseLeave={() => setHoveredButton(null)}
-              className="relative bg-[#E6FF03] font-semibold px-6 py-2.5 rounded-xl overflow-hidden"
+              className="relative bg-[#E6FF03] font-medium px-6 py-2.5 rounded-xl overflow-hidden cursor-pointer"
             >
               <span className={`inline-block transition-all duration-500 ${hoveredButton === "signup" ? "-translate-y-6 opacity-0" : "translate-y-0 opacity-100"}`}>
                 Sign Up

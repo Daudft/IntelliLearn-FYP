@@ -23,15 +23,13 @@ export default function Hero() {
 
 
         <h1 className=" text-5xl md:text-6xl font-bold text-gray-800 leading-tight">
-          Expert insights.
+          Supercharge Your 
           <br />
-          Custom solutions.
+          Skills with AI
         </h1>
 
         <p className="text-gray-700 mt-6 text-lg max-w-xl">
-          Easily adapt to changes and scale your operations with our flexible
-          infrastructure, designed to support your learning and skills
-          improvement.
+          Take a fast assessment, let AI guide your next steps, and enjoy a personalized task flow that makes improving your skills feel easy and enjoyable.
         </p>
 
         {/* BUTTONS */}
@@ -86,7 +84,7 @@ export default function Hero() {
           </div>
 
           <p className="text-gray-700 font-medium">
-            <span className="font-bold">100+</span> consultants trust IntelliLearn.
+            <span className="font-bold">100+</span> students trust our platform.
           </p>
         </div>
 
