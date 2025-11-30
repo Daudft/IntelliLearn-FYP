@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [hoveredButton, setHoveredButton] = useState(false);
 
   return (
     <footer className="relative w-full bg-black text-white py-20 overflow-hidden rounded-2xl my-5 border border-white/10">
@@ -32,26 +34,35 @@ export default function Footer() {
           </motion.h2>
           
           <motion.p
-            className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed"
+            className="text-lg text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: -10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            Gain an edge with our exclusive learning platform, designed to provide you with tailored insights and guidance across every industry and subject.
+            Where intelligent assessment meets progress, helping you build on strengths and improve with confidence.
           </motion.p>
           
-          <motion.button
-            className="px-8 py-4 bg-linear-to-r from-yellow-300 via-green-400 to-lime-300 text-black font-bold rounded-2xl hover:shadow-2xl hover:shadow-green-400/50 transition-all text-lg inline-flex items-center gap-2"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <motion.a
+            href="/signup"
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
             viewport={{ once: true }}
           >
-            Get Started Now →
-          </motion.button>
+            <button
+              onMouseEnter={() => setHoveredButton(true)}
+              onMouseLeave={() => setHoveredButton(false)}
+              className="relative px-8 py-4 bg-linear-to-r from-yellow-300 via-green-400 to-lime-300 text-black font-bold rounded-2xl hover:shadow-2xl hover:shadow-green-400/50 transition-all text-lg inline-flex items-center gap-2 overflow-hidden"
+            >
+              <span className={`inline-flex items-center gap-2 transition-all duration-700 ${hoveredButton ? "-translate-y-10 opacity-0" : "translate-y-0 opacity-100"}`}>
+                Get Started Now →
+              </span>
+              <span className={`absolute inset-0 flex items-center justify-center gap-2 transition-all duration-700 ${hoveredButton ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+                Get Started Now →
+              </span>
+            </button>
+          </motion.a>
         </motion.div>
 
         {/* Divider */}

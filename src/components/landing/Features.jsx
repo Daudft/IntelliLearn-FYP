@@ -37,23 +37,23 @@ export default function Features() {
 
   const features = [
     {
-      title: "Zero Configuration",
-      desc: "Automatically detect metrics and performance patterns using AI without manual setup.",
+      title: "Adaptive Assessments",
+      desc: "Get quick, accurate skill evaluations that automatically adjust based on your performance.",
       img: "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=1632&auto=format&fit=crop", 
     },
     {
-      title: "Auto Correlation",
-      desc: "Instantly analyze all learning behaviors and reveal hidden insights across your data.",
+      title: "Personalized Task Generation",
+      desc: "Receive custom learning tasks created specifically for your strengths and improvement areas.",
       img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1170&auto=format&fit-crop", 
     },
     {
-      title: "Slack Native",
-      desc: "Get AI-generated alerts and reports instantly inside your daily Slack workflows.",
+      title: "AI Mentor Support",
+      desc: "Guided suggestions and learning tips from your AI mentor to help you progress confidently.",
       img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1074&auto=format&fit-crop", 
     },
     {
-      title: "Incident Assistant",
-      desc: "AI suggests solutions and learning adjustments automatically when issues arise.",
+      title: "Progress Tracking",
+      desc: "Clear visuals that show your improvement and learning journey over time.",
       img: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=1170&auto=format&fit-crop", 
     },
   ];
@@ -90,10 +90,10 @@ export default function Features() {
           {/* Section Title */}
           <div className="pt-20 pb-12 px-6 md:px-10"> 
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Powerful AI Features
+              Our Top Features
             </h2>
             <p className="text-gray-400 max-w-lg text-lg">
-              Experience the next generation of learning intelligence.
+              Simple, effective, and designed to support your learning every step of the way.
             </p>
           </div>
 

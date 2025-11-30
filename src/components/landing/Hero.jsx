@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export default function Hero() {
+  const [hoveredButton, setHoveredButton] = useState(false);
   return (
     <section className="relative w-full overflow-hidden rounded-2xl">
 
@@ -21,37 +23,55 @@ export default function Hero() {
 
 
         <h1 className=" text-5xl md:text-6xl font-bold text-gray-800 leading-tight">
-          Expert insights.
+          Supercharge Your 
           <br />
-          Custom solutions.
+          Skills with AI
         </h1>
 
         <p className="text-gray-700 mt-6 text-lg max-w-xl">
-          Easily adapt to changes and scale your operations with our flexible
-          infrastructure, designed to support your learning and skills
-          improvement.
+          Take a fast assessment, let AI guide your next steps, and enjoy a personalized task flow that makes improving your skills feel easy and enjoyable.
         </p>
 
         {/* BUTTONS */}
        {/* SINGLE GET STARTED BUTTON */}
 <div className="mt-8">
- <Link to="/signup">
-  <button className="bg-[#E6FF03] text-black font-semibold px-8 py-3 rounded-xl flex items-center gap-2 text-lg">
-    Get Started
-    <span className="w-4 h-4">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth="2"
-        stroke="currentColor"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-      </svg>
-    </span>
-  </button>
-</Link>
+  <a href="/signup">
+    <button 
+      onMouseEnter={() => setHoveredButton(true)}
+      onMouseLeave={() => setHoveredButton(false)}
+      className="relative bg-[#E6FF03] text-black font-semibold px-8 py-3 rounded-xl flex items-center gap-2 text-lg overflow-hidden"
+    >
+      <span className={`inline-flex items-center gap-2 transition-all duration-500 ${hoveredButton ? "-translate-y-10 opacity-0" : "translate-y-0 opacity-100"}`}>
+        Get Started
+        <span className="w-4 h-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </span>
+      </span>
 
+      <span className={`absolute inset-0 flex items-center justify-center gap-2 transition-all duration-500 ${hoveredButton ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+        Get Started
+        <span className="w-4 h-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </span>
+      </span>
+    </button>
+  </a>
 </div>
 
 
@@ -64,7 +84,7 @@ export default function Hero() {
           </div>
 
           <p className="text-gray-700 font-medium">
-            <span className="font-bold">100+</span> consultants trust IntelliLearn.
+            <span className="font-bold">100+</span> students trust our platform.
           </p>
         </div>
 
