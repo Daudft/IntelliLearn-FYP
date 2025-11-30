@@ -1,6 +1,8 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export default function Navbar() {
+  const [hoveredButton, setHoveredButton] = useState(null);
+
   return (
     <div className="w-full bg-[#F1F2F4] py-4">
 
@@ -8,12 +10,11 @@ export default function Navbar() {
       <nav className="w-full bg-white rounded-2xl shadow-sm px-8 py-4 flex items-center justify-between">
 
         {/* Logo (LEFT CORNER) */}
-        <Link to="/">
-  <h1 className="text-2xl font-bold text-gray-800 cursor-pointer">
-    IntelliLearn
-  </h1>
-</Link>
-
+        <a href="/">
+          <h1 className="text-2xl font-bold text-gray-800 cursor-pointer">
+            IntelliLearn
+          </h1>
+        </a>
 
         {/* Center Links */}
         <ul className="hidden md:flex items-center space-x-10 text-gray-700 font-medium">
@@ -26,24 +27,37 @@ export default function Navbar() {
         {/* RIGHT SIDE BUTTONS */}
         <div className="hidden md:flex items-center space-x-4">
           
-          {/* Sign In (simple text button) */}
-         <Link to="/signin">
-  <button className="px-5 py-2 bg-[#F5F5F5] rounded-xl text-gray-800 font-medium">
-    Sign In
-  </button>
-</Link>
+          {/* Sign In Button */}
+          <a href="/signin">
+            <button 
+              onMouseEnter={() => setHoveredButton("signin")}
+              onMouseLeave={() => setHoveredButton(null)}
+              className="relative px-5 py-2 bg-[#F5F5F5] rounded-xl text-gray-800 font-medium overflow-hidden"
+            >
+              <span className={`inline-block transition-all duration-500 ${hoveredButton === "signin" ? "-translate-y-6 opacity-0" : "translate-y-0 opacity-100"}`}>
+                Sign In
+              </span>
+              <span className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${hoveredButton === "signin" ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}>
+                Sign In
+              </span>
+            </button>
+          </a>
 
-
-
-
-
-          {/* Sign Up (highlight button) */}
-         <Link to="/signup">
-  <button className="bg-[#E6FF03] font-semibold px-6 py-2.5 rounded-xl">
-    Sign Up
-  </button>
-</Link>
-
+          {/* Sign Up Button */}
+          <a href="/signup">
+            <button 
+              onMouseEnter={() => setHoveredButton("signup")}
+              onMouseLeave={() => setHoveredButton(null)}
+              className="relative bg-[#E6FF03] font-semibold px-6 py-2.5 rounded-xl overflow-hidden"
+            >
+              <span className={`inline-block transition-all duration-500 ${hoveredButton === "signup" ? "-translate-y-6 opacity-0" : "translate-y-0 opacity-100"}`}>
+                Sign Up
+              </span>
+              <span className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${hoveredButton === "signup" ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}>
+                Sign Up
+              </span>
+            </button>
+          </a>
 
         </div>
 

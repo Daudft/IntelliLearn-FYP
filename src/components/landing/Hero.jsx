@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export default function Hero() {
+  const [hoveredButton, setHoveredButton] = useState(false);
   return (
     <section className="relative w-full overflow-hidden rounded-2xl">
 
@@ -35,23 +37,43 @@ export default function Hero() {
         {/* BUTTONS */}
        {/* SINGLE GET STARTED BUTTON */}
 <div className="mt-8">
- <Link to="/signup">
-  <button className="bg-[#E6FF03] text-black font-semibold px-8 py-3 rounded-xl flex items-center gap-2 text-lg">
-    Get Started
-    <span className="w-4 h-4">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth="2"
-        stroke="currentColor"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
-      </svg>
-    </span>
-  </button>
-</Link>
+  <a href="/signup">
+    <button 
+      onMouseEnter={() => setHoveredButton(true)}
+      onMouseLeave={() => setHoveredButton(false)}
+      className="relative bg-[#E6FF03] text-black font-semibold px-8 py-3 rounded-xl flex items-center gap-2 text-lg overflow-hidden"
+    >
+      <span className={`inline-flex items-center gap-2 transition-all duration-500 ${hoveredButton ? "-translate-y-10 opacity-0" : "translate-y-0 opacity-100"}`}>
+        Get Started
+        <span className="w-4 h-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </span>
+      </span>
 
+      <span className={`absolute inset-0 flex items-center justify-center gap-2 transition-all duration-500 ${hoveredButton ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+        Get Started
+        <span className="w-4 h-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </span>
+      </span>
+    </button>
+  </a>
 </div>
 
 
