@@ -40,6 +40,18 @@ const authService = {
     return response.data;
   },
 
+  // ✅ NEW - Check Assessment Status
+  checkAssessmentStatus: async (userId) => {
+    const response = await api.get(`/assessment/status/${userId}`);
+    return response.data;
+  },
+
+  // ✅ NEW - Get User Result
+  getUserResult: async (userId) => {
+    const response = await api.get(`/assessment/result/${userId}`);
+    return response.data;
+  },
+
   // Logout
   logout: async () => {
     const response = await api.post('/auth/logout');

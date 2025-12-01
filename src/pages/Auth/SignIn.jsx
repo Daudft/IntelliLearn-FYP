@@ -54,7 +54,7 @@ int main() {
   };
 
   // ---------------------------
-  // ✅ UPDATED LOGIN FUNCTION
+  // ✅ UPDATED LOGIN FUNCTION WITH ASSESSMENT CHECK
   // ---------------------------
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -64,10 +64,20 @@ int main() {
     try {
       const response = await authService.signin({ email, password });
       
-      alert(response.message || "Login successful!");
-      
-      // Redirect to home page
-      navigate("/");
+      // Get user ID from response
+      const userId = response.user.id;
+
+      // ✅ Check if user has completed assessment
+      const assessmentStatus = await authService.checkAssessmentStatus(userId);
+
+      if (assessmentStatus.hasCompletedAssessment) {
+        // User completed assessment - redirect to result page
+        const resultData = await authService.getUserResult(userId);
+        navigate("/assessment/result", { state: { result: resultData.result } });
+      } else {
+        // First-time user - redirect to assessment
+        navigate("/assessment");
+      }
       
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Login failed. Please try again.";
