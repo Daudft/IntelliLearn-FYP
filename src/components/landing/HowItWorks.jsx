@@ -49,11 +49,9 @@ export default function HowItWorks() {
 
   return (
     <div>
-      <section 
-        className="relative w-full bg-white border border-gray-200 my-5 rounded-2xl overflow-hidden"
-      >
-        
-        {/* BACKGROUND GRIDS */}
+      <section className="relative w-full bg-white border border-gray-200  overflow-hidden">
+
+        {/* BACKGROUND GRID */}
         <div
           ref={gridRef}
           className="absolute inset-0 opacity-20 pointer-events-auto"
@@ -70,41 +68,54 @@ export default function HowItWorks() {
           }}
         ></div>
 
-        <div className="absolute inset-0 opacity-5 pointer-events-none"
+        <div
+          className="absolute inset-0 opacity-5 pointer-events-none"
           style={{
             backgroundImage: `linear-gradient(to right, rgba(34,197,94,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(34,197,94,0.2) 1px, transparent 1px)`,
             backgroundSize: "60px 60px",
           }}
         />
 
-        {/* INNER CONTENT */}
+        {/* CONTENT */}
         <div className="relative z-10 max-w-7xl mx-auto">
-          
-          {/* Section Title */}
-          <div className="pt-32 pb-20 px-6 md:px-10">
-            <motion.h2 
-              className="text-4xl md:text-5xl font-bold text-black mb-4"
+
+          {/* SECTION HEADING */}
+          <div className="pt-28 pb-20 px-6 md:px-10 text-center">
+            <motion.p
+              className="text-xs tracking-[0.25em] text-gray-500 mb-3"
+              initial={{ opacity: 0, y: -10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              viewport={{ once: true }}
+            >
+              HOW IT WORKS
+            </motion.p>
+
+            <motion.h2
+              className="text-4xl md:text-5xl font-extrabold text-black mb-4"
               initial={{ opacity: 0, y: -20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              How It Works
+              Learn Smarter, Not Harder
             </motion.h2>
-            <motion.p 
-              className="text-gray-700 max-w-lg text-lg"
+
+            <motion.p
+              className="text-gray-700 text-lg max-w-xl mx-auto"
               initial={{ opacity: 0, y: -10 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              Simple, smart, and seamless. Your learning journey in 4 easy steps.
+              Your learning journey broken into four simple and powerful steps.
             </motion.p>
           </div>
 
-          {/* Steps Grid */}
+          {/* STEPS GRID */}
           <div className="px-6 md:px-10 pb-32">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 relative">
+
               {steps.map((step, index) => {
                 return (
                   <motion.div
@@ -115,17 +126,16 @@ export default function HowItWorks() {
                     viewport={{ once: true, margin: "-100px" }}
                     className="relative group"
                   >
-                    {/* Hover Glow Effect */}
+                    {/* Glow */}
                     <div className="absolute -inset-1 bg-gradient-to-r from-yellow-300/20 to-green-300/20 rounded-2xl blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    
-                    {/* Card */}
-                    <motion.div 
+
+                    {/* CARD */}
+                    <motion.div
                       className="relative p-10 bg-white backdrop-blur border border-gray-200 rounded-2xl hover:border-yellow-200 hover:shadow-md transition-all duration-300 h-full"
                       whileHover={{ y: -5, transition: { duration: 0.2 } }}
                     >
-                      
-                      {/* Step Number */}
-                      <motion.div 
+                      {/* Number */}
+                      <motion.div
                         className="text-5xl font-bold text-yellow-300/60 mb-4"
                         initial={{ scale: 0.8, opacity: 0 }}
                         whileInView={{ scale: 1, opacity: 1 }}
@@ -135,20 +145,24 @@ export default function HowItWorks() {
                         {step.number}
                       </motion.div>
 
-                      {/* Icon */}
-                      <motion.div 
-                        className="mb-4 p-3 bg-gradient-to-br from-yellow-200 to-yellow-100 rounded-lg w-fit text-3xl"
+                      {/* FIXED ICON */}
+                      <motion.div
+                        className="mb-4 flex items-center justify-center bg-gradient-to-br from-yellow-200 to-yellow-100 rounded-lg w-16 h-16 text-3xl"
                         initial={{ scale: 0, rotate: -90 }}
                         whileInView={{ scale: 1, rotate: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 + 0.1, type: "spring" }}
+                        transition={{
+                          duration: 0.5,
+                          delay: index * 0.1 + 0.1,
+                          type: "spring",
+                        }}
                         viewport={{ once: true }}
                         whileHover={{ scale: 1.1, rotate: 10 }}
                       >
                         {step.icon}
                       </motion.div>
 
-                      {/* Title */}
-                      <motion.h3 
+                      {/* TITLE */}
+                      <motion.h3
                         className="text-xl font-bold text-black mb-3"
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -158,8 +172,8 @@ export default function HowItWorks() {
                         {step.title}
                       </motion.h3>
 
-                      {/* Description */}
-                      <motion.p 
+                      {/* DESCRIPTION */}
+                      <motion.p
                         className="text-sm text-gray-600 leading-relaxed"
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -169,19 +183,32 @@ export default function HowItWorks() {
                         {step.desc}
                       </motion.p>
 
-                      {/* Arrow Connector */}
+                      {/* SVG ARROW — PERFECTLY CENTERED */}
                       {index < steps.length - 1 && (
-                        <motion.div 
-                          className="hidden lg:block absolute -right-8 top-1/2 transform -translate-y-1/2 text-2xl text-yellow-300/40"
+                        <motion.div
+                          className="hidden lg:flex absolute top-1/2 -translate-y-1/2 right-[-28px] items-center justify-center"
                           initial={{ opacity: 0, x: -10 }}
                           whileInView={{ opacity: 1, x: 0 }}
                           transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
                           viewport={{ once: true }}
                           whileHover={{ x: 5 }}
                         >
-                          →
+                          <svg
+                            width="36"
+                            height="36"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="#FACC15"
+                            strokeWidth="2.2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                          </svg>
                         </motion.div>
                       )}
+
                     </motion.div>
                   </motion.div>
                 );

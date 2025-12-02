@@ -6,16 +6,22 @@ import Footer from "../../components/landing/Footer";
 
 export default function LandingPage() {
   return (
-    <div className="bg-[#F1F2F4] min-h-screen px-4">
+    <div className="bg-[#F1F2F4] min-h-screen">
 
-      <Navbar />
-      <Hero />
+      {/* LIGHT SECTIONS WITH PADDING */}
+      <div className="px-4">
+        <Navbar />
+        <Hero />
+      </div>
 
-      {/* DARK SECTIONS */}
+      {/* DARK SECTIONS - FULL WIDTH (NO SIDE PADDING) */}
       <Features />
       <HowItWorks />
 
-      <Footer />
+      {/* FOOTER WITH NORMAL PADDING */}
+      
+        <Footer />
+      
 
     </div>
   );

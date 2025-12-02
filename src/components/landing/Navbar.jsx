@@ -7,21 +7,21 @@ export default function Navbar() {
     <div className="w-full bg-[#F1F2F4] py-4">
 
       {/* FULL WIDTH WHITE NAVBAR */}
-      <nav className="w-full bg-white rounded-2xl shadow-sm px-8 py-4 flex items-center justify-between">
+      <nav className="w-full bg-black rounded-2xl shadow-sm px-8 py-4 flex items-center justify-between">
 
         {/* Logo (LEFT CORNER) */}
         <a href="/">
-          <h1 className="text-2xl font-bold text-gray-800 cursor-pointer">
+          <h1 className="text-2xl font-bold text-[#F5F5F5] cursor-pointer">
             IntelliLearn
           </h1>
         </a>
 
         {/* Center Links */}
-        <ul className="hidden md:flex items-center space-x-10 text-gray-700 font-medium">
-          <li className="cursor-pointer hover:text-black">Features</li>
-          <li className="cursor-pointer hover:text-black">How it Works</li>
-          <li className="cursor-pointer hover:text-black">Pricing</li>
-          <li className="cursor-pointer hover:text-black">Courses</li>
+        <ul className="hidden md:flex items-center space-x-10 text-[#F5F5F5] font-medium">
+          <li className="cursor-pointer ">Features</li>
+          <li className="cursor-pointer ">How it Works</li>
+          <li className="cursor-pointer ">Pricing</li>
+          <li className="cursor-pointer ">Courses</li>
         </ul>
 
         {/* RIGHT SIDE BUTTONS */}
@@ -63,7 +63,7 @@ export default function Navbar() {
 
         {/* Mobile Menu Icon */}
         <div className="md:hidden">
-          <svg width="26" height="26" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="26" height="26" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" y1="7" x2="23" y2="7" />
             <line x1="3" y1="13" x2="23" y2="13" />
             <line x1="3" y1="19" x2="23" y2="19" />

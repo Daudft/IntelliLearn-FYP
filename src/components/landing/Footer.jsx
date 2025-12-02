@@ -6,7 +6,7 @@ export default function Footer() {
   const [hoveredButton, setHoveredButton] = useState(false);
 
   return (
-    <footer className="relative w-full bg-black text-white py-20 overflow-hidden rounded-2xl my-5 border border-white/10">
+    <footer className="relative w-full bg-black text-white py-20 overflow-hidden  border border-white/10">
       
       
 
