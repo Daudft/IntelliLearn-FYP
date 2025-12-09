@@ -5,9 +5,12 @@ import authService from "../../services/authService";
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [showPass, setShowPass] = useState(false);
+
   const [lang, setLang] = useState("python");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   const navigate = useNavigate();
 
@@ -53,36 +56,27 @@ int main() {
 `,
   };
 
-  // ---------------------------
-  // ✅ UPDATED LOGIN FUNCTION WITH ASSESSMENT CHECK
-  // ---------------------------
   const handleSignIn = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
+    setMessage({ type: "", text: "" });
 
     try {
       const response = await authService.signin({ email, password });
-      
-      // Get user ID from response
       const userId = response.user.id;
 
-      // ✅ Check if user has completed assessment
       const assessmentStatus = await authService.checkAssessmentStatus(userId);
 
       if (assessmentStatus.hasCompletedAssessment) {
-        // User completed assessment - redirect to result page
         const resultData = await authService.getUserResult(userId);
         navigate("/assessment/result", { state: { result: resultData.result } });
       } else {
-        // First-time user - redirect to assessment
         navigate("/assessment");
       }
-      
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Login failed. Please try again.";
-      setError(errorMessage);
-      alert(errorMessage);
+      const msg =
+        err.response?.data?.message || "Login failed. Please try again.";
+      setMessage({ type: "error", text: msg });
     } finally {
       setLoading(false);
     }
@@ -90,27 +84,38 @@ int main() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F1F2F4] px-4">
-      <div className="bg-white w-full max-w-6xl rounded-3xl shadow-xl flex flex-col md:flex-row overflow-hidden">
 
-        {/* LEFT SIDE */}
-        <div className="w-full md:w-1/2 p-10 md:p-14">
-          <h2 className="text-4xl font-bold text-gray-900">Welcome Back</h2>
-          <p className="text-gray-600 mt-3 mb-10">
-            Sign in to continue your learning journey.
-          </p>
+      <div className="bg-white w-full max-w-6xl rounded-3xl shadow-lg 
+      flex flex-col md:flex-row overflow-hidden min-h-[500px]">
 
-          {/* ERROR MESSAGE */}
-          {error && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-              {error}
+        {/* LEFT SIDE — MOVED UP */}
+        <div className="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-start mt-4 space-y-4">
+
+          <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
+          <p className="text-gray-600">Sign in to continue your learning journey.</p>
+
+          {/* ALERT MESSAGE */}
+          {message.text && (
+            <div
+              className={`
+                p-2 rounded-md text-xs border 
+                transition-all duration-300 animate-fadeIn
+                ${
+                  message.type === "error"
+                    ? "bg-red-100 text-red-700 border-red-300"
+                    : "bg-green-100 text-green-700 border-green-300"
+                }
+              `}
+            >
+              {message.text}
             </div>
           )}
 
-          <form className="space-y-6" onSubmit={handleSignIn}>
+          <form className="space-y-4" onSubmit={handleSignIn}>
 
             {/* EMAIL */}
             <div>
-              <label className="block font-medium text-gray-800 mb-1">
+              <label className="block font-medium text-gray-800 mb-1 text-sm">
                 Email Address
               </label>
               <input
@@ -118,96 +123,88 @@ int main() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
                 required
-                className="
-                  w-full px-4 py-3 rounded-xl
-                  border border-black/20 bg-white text-gray-900 shadow-sm
-                  hover:border-black/40
-                  focus:border-black focus:ring-2 focus:ring-black/10
-                  focus:outline-none transition-all duration-200
-                "
+                className="w-full px-3 py-2 rounded-lg border border-black/10 bg-white text-gray-900
+                outline-none focus:border-gray-300 focus:ring-1 focus:ring-gray-200 transition text-sm"
               />
             </div>
 
             {/* PASSWORD */}
             <div>
-              <label className="block font-medium text-gray-800 mb-1">
+              <label className="block font-medium text-gray-800 mb-1 text-sm">
                 Password
               </label>
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="
-                  w-full px-4 py-3 rounded-xl
-                  border border-black/20 bg-white text-gray-900 shadow-sm
-                  hover:border-black/40
-                  focus:border-black focus:ring-2 focus:ring-black/10
-                  focus:outline-none transition-all duration-200
-                "
-              />
 
-              <div className="text-right mt-2">
+              <div className="relative">
+                <input
+                  type={showPass ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="current-password"
+                  required
+                  className="w-full px-3 py-2 rounded-lg border border-black/10 bg-white text-gray-900
+                  outline-none focus:border-gray-300 focus:ring-1 focus:ring-gray-200 transition text-sm"
+                />
+
+                {/* 👁 PASSWORD TOGGLE */}
+                <span
+                  onClick={() => setShowPass(!showPass)}
+                  className="absolute right-3 top-2.5 cursor-pointer text-gray-600 text-sm"
+                >
+                  {showPass ? "🙈" : "👁️"}
+                </span>
+              </div>
+
+              <div className="text-right mt-1">
                 <Link
                   to="/forgot-password"
-                  className="text-blue-600 hover:underline font-medium"
+                  className="text-blue-600 hover:underline text-xs font-medium"
                 >
                   Forgot Password?
                 </Link>
               </div>
             </div>
 
-            {/* BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#E6FF03] text-black font-semibold text-lg py-3 rounded-xl 
-              hover:bg-[#d7ee00] transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#E6FF03] text-black font-semibold text-base py-2 rounded-lg 
+              hover:bg-[#d7ee00] transition shadow disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Signing In..." : "Sign In"}
             </button>
           </form>
 
-          <p className="text-center mt-8 text-gray-700">
+          <p className="text-center text-gray-700 text-sm">
             Don't have an account?{" "}
-            <Link
-              to="/signup"
-              className="text-blue-600 font-semibold hover:underline"
-            >
+            <Link to="/signup" className="text-blue-600 font-semibold hover:underline">
               Create Account
             </Link>
           </p>
         </div>
 
-        {/* RIGHT BLUEPRINT PANEL */}
-        <div className="hidden md:flex w-1/2 bg-[#0A0A0A] relative overflow-hidden text-white p-14">
+        {/* RIGHT SIDE */}
+        <div className="hidden md:flex w-1/2 bg-[#0A0A0A] relative text-white p-8 overflow-hidden">
+          <div className="absolute inset-0 opacity-[0.06]
+            bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),
+            linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)]
+            bg-[size:30px_30px]" />
 
-          {/* GRID */}
-          <div
-            className="absolute inset-0 opacity-[0.07] 
-              bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),
-              linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)]
-              bg-[size:40px_40px] z-0"
-          ></div>
+          <div className="absolute top-8 left-8 w-16 h-16 border border-gray-600 rounded-lg opacity-30"></div>
+          <div className="absolute bottom-10 right-10 w-24 h-24 border border-gray-600 rounded-full opacity-20"></div>
+          <div className="absolute top-1/2 right-14 w-14 h-14 border border-gray-600 rotate-45 opacity-30"></div>
 
-          {/* SHAPES */}
-          <div className="absolute top-10 left-10 w-20 h-20 border border-gray-600 rounded-lg opacity-20 z-10"></div>
-          <div className="absolute bottom-10 right-12 w-28 h-28 border border-gray-600 rounded-full opacity-20 z-10"></div>
-          <div className="absolute top-1/2 right-20 w-16 h-16 border border-gray-600 rotate-45 opacity-20 z-10"></div>
+          <div className="relative z-10 w-full">
+            <h3 className="text-3xl font-semibold mb-5">Learn. Build. Innovate.</h3>
 
-          {/* CONTENT */}
-          <div className="relative z-20 w-full">
-            <h3 className="text-3xl font-semibold mb-8">Learn. Build. Innovate.</h3>
-
-            {/* TABS */}
-            <div className="flex gap-4 mb-6">
+            <div className="flex gap-2 mb-4">
               {["python", "java", "c"].map((language) => (
                 <button
                   key={language}
                   onClick={() => setLang(language)}
-                  className={`px-4 py-1 rounded-lg text-sm font-semibold transition ${
+                  className={`px-3 py-1 rounded-md text-xs font-semibold transition ${
                     lang === language
                       ? "bg-[#E6FF03] text-black"
                       : "bg-white/10 border border-gray-700 text-gray-300 hover:bg-white/20"
@@ -218,17 +215,15 @@ int main() {
               ))}
             </div>
 
-            {/* CODE BOX */}
             <div
-              className="bg-black/40 rounded-xl p-6 shadow-lg w-[90%]
-              font-mono text-sm md:text-[13px] lg:text-[14px]
-              leading-relaxed text-[#E6FF03] whitespace-pre-wrap"
-              style={{ height: "340px", overflow: "hidden" }}
+              className="bg-black/40 rounded-lg p-4 shadow-lg font-mono text-sm text-[#E6FF03] whitespace-pre-wrap"
+              style={{ height: "220px", overflow: "hidden" }}
             >
               {codeSamples[lang]}
             </div>
           </div>
         </div>
+
       </div>
     </div>
   );
