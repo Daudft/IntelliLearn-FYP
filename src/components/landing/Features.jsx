@@ -59,7 +59,7 @@ export default function Features() {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   return (
-    <section className="relative w-full min-h-screen bg-black overflow-hidden pt-6 pb-20 px-4 lg:px-0">
+    <section id="features" className="relative w-full min-h-screen bg-black overflow-hidden pt-6 pb-20 px-4 lg:px-0">
 
       {/* Background lights */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
