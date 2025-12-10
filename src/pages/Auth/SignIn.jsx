@@ -65,15 +65,26 @@ int main() {
       const response = await authService.signin({ email, password });
       const userId = response.user.id;
 
-      const assessmentStatus = await authService.checkAssessmentStatus(userId);
+      // ✅ CHANGED: Wrap in try-catch to handle "no assessment" gracefully
+      try {
+        const assessmentStatus = await authService.checkAssessmentStatus(userId);
 
-      if (assessmentStatus.hasCompletedAssessment) {
-        const resultData = await authService.getUserResult(userId);
-        navigate("/assessment/result", { state: { result: resultData.result } });
-      } else {
+        // ✅ If assessment completed, show the latest result
+        if (assessmentStatus.hasCompletedAssessment) {
+          const resultData = await authService.getUserResult(userId);
+          navigate("/assessment/result", { state: { result: resultData.result } });
+        } else {
+          // ✅ If NO assessment, go to language selection (silent redirect)
+          navigate("/assessment");
+        }
+      } catch (assessmentError) {
+        // ✅ If checkAssessmentStatus fails (user not found, etc), still go to assessment
+        // This handles the "No assessment found" case gracefully
+        console.log("No assessment found, redirecting to assessment page");
         navigate("/assessment");
       }
     } catch (err) {
+      // ❌ Only show error for actual login failures
       const msg =
         err.response?.data?.message || "Login failed. Please try again.";
       setMessage({ type: "error", text: msg });

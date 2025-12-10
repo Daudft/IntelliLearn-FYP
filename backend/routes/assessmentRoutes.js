@@ -5,6 +5,7 @@ const {
   getQuestions,
   submitAssessment,
   getUserResult,
+  getUserAllAttempts, // ✅ ADDED: New controller function
   checkAssessmentStatus,
 } = require('../controllers/assessmentController');
 
@@ -17,7 +18,10 @@ router.get('/questions/:language', getQuestions);
 // POST submit assessment and get results
 router.post('/submit', submitAssessment);
 
-// GET user's assessment result
+// ✅ ADDED: GET all user's assessment attempts
+router.get('/all-attempts/:userId', getUserAllAttempts);
+
+// GET user's latest assessment result
 router.get('/result/:userId', getUserResult);
 
 // GET check if user completed assessment

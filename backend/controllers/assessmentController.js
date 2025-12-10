@@ -56,14 +56,20 @@ exports.submitAssessment = async (req, res) => {
       return res.status(400).json({ message: 'Missing required fields' });
     }
     
-    // Check if user already completed assessment
-    const existingAssessment = await UserAssessment.findOne({ userId });
-    if (existingAssessment) {
-      return res.status(400).json({ message: 'Assessment already completed' });
-    }
+    // ✅ CHANGED: Get the latest attempt number instead of blocking retakes
+    const lastAttempt = await UserAssessment.findOne({ userId, language })
+      .sort({ attemptNumber: -1 }); // Get the most recent attempt
+    
+    const attemptNumber = lastAttempt ? lastAttempt.attemptNumber + 1 : 1;
     
     // Get all questions with correct answers
-    const questions = await Assessment.find({ language }).sort({ questionNumber: 1 }).limit(15);
+    const questions = await Assessment.find({ language })
+      .sort({ questionNumber: 1 })
+      .limit(15);
+    
+    if (questions.length === 0) {
+      return res.status(404).json({ message: 'No questions found for this language' });
+    }
     
     // Grade the test
     let score = 0;
@@ -105,10 +111,11 @@ exports.submitAssessment = async (req, res) => {
       proficiencyLevel = 'Advanced';
     }
     
-    // Save user assessment result
+    // ✅ CHANGED: Create new assessment record with attempt number
     const userAssessment = await UserAssessment.create({
       userId,
       language,
+      attemptNumber, // Store which attempt this is
       answers: gradedAnswers,
       score,
       totalQuestions,
@@ -118,11 +125,12 @@ exports.submitAssessment = async (req, res) => {
       timeTaken: timeTaken || null,
     });
     
-    // Update user model
+    // ✅ CHANGED: Update user with latest proficiency level and attempt date
     await User.findByIdAndUpdate(userId, {
       hasCompletedAssessment: true,
       assessmentLanguage: language,
       proficiencyLevel: proficiencyLevel,
+      lastAssessmentDate: new Date(),
     });
     
     res.status(201).json({
@@ -133,6 +141,7 @@ exports.submitAssessment = async (req, res) => {
         percentage,
         proficiencyLevel,
         topicBreakdown: Object.fromEntries(topicBreakdown),
+        attemptNumber, // Return attempt number to frontend
       },
     });
   } catch (error) {
@@ -141,12 +150,14 @@ exports.submitAssessment = async (req, res) => {
   }
 };
 
-// GET USER'S ASSESSMENT RESULT
+// ✅ UPDATED: GET USER'S LATEST ASSESSMENT RESULT
 exports.getUserResult = async (req, res) => {
   try {
     const { userId } = req.params;
     
+    // ✅ CHANGED: Get the most recent assessment by sorting by completedAt descending
     const result = await UserAssessment.findOne({ userId })
+      .sort({ completedAt: -1 }) // Get the latest attempt
       .populate('userId', 'name email')
       .populate('answers.questionId', 'question topic questionType');
     
@@ -155,6 +166,29 @@ exports.getUserResult = async (req, res) => {
     }
     
     res.status(200).json({ result });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// ✅ NEW: GET ALL USER'S ASSESSMENT ATTEMPTS
+exports.getUserAllAttempts = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    const attempts = await UserAssessment.find({ userId })
+      .sort({ completedAt: -1 }) // Most recent first
+      .populate('userId', 'name email')
+      .populate('answers.questionId', 'question topic questionType');
+    
+    if (!attempts.length) {
+      return res.status(404).json({ message: 'No assessments found for this user' });
+    }
+    
+    res.status(200).json({ 
+      attempts,
+      totalAttempts: attempts.length 
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
