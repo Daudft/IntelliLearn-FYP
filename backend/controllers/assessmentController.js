@@ -2,7 +2,9 @@ const Assessment = require('../models/Assessment');
 const UserAssessment = require('../models/UserAssessment');
 const User = require('../models/User');
 
-// GET AVAILABLE LANGUAGES
+/* ---------------------------------------------
+   GET AVAILABLE LANGUAGES
+--------------------------------------------- */
 exports.getLanguages = async (req, res) => {
   try {
     const languages = [
@@ -10,206 +12,203 @@ exports.getLanguages = async (req, res) => {
       { id: 'java', name: 'Java', icon: '☕' },
       { id: 'c', name: 'C', icon: '💻' },
     ];
-    
+
     res.status(200).json({ languages });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// GET TEST QUESTIONS FOR SELECTED LANGUAGE
+/* ---------------------------------------------
+   GET TEST QUESTIONS BY LANGUAGE
+--------------------------------------------- */
 exports.getQuestions = async (req, res) => {
   try {
     const { language } = req.params;
-    
-    // Validate language
+
     if (!['python', 'java', 'c'].includes(language)) {
       return res.status(400).json({ message: 'Invalid language' });
     }
-    
-    // Get 15 questions for the language
+
     const questions = await Assessment.find({ language })
       .sort({ questionNumber: 1 })
       .limit(15)
-      .select('-correctAnswer -explanation'); // Don't send correct answers to frontend
-    
+      .select('-correctAnswer -explanation');
+
     if (questions.length === 0) {
       return res.status(404).json({ message: 'No questions found for this language' });
     }
-    
-    res.status(200).json({ 
+
+    res.status(200).json({
       questions,
-      totalQuestions: questions.length 
+      totalQuestions: questions.length
     });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// SUBMIT TEST AND CALCULATE RESULTS
+/* ---------------------------------------------
+   SUBMIT ASSESSMENT (UNLIMITED ATTEMPTS)
+--------------------------------------------- */
 exports.submitAssessment = async (req, res) => {
   try {
     const { userId, language, answers, timeTaken } = req.body;
-    
-    // Validation
+
     if (!userId || !language || !answers) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
-    
-    // ✅ CHANGED: Get the latest attempt number instead of blocking retakes
+
+    // Get last attempt number and increment
     const lastAttempt = await UserAssessment.findOne({ userId, language })
-      .sort({ attemptNumber: -1 }); // Get the most recent attempt
-    
+      .sort({ attemptNumber: -1 });
+
     const attemptNumber = lastAttempt ? lastAttempt.attemptNumber + 1 : 1;
-    
-    // Get all questions with correct answers
+
+    // Get correct answers
     const questions = await Assessment.find({ language })
       .sort({ questionNumber: 1 })
       .limit(15);
-    
+
     if (questions.length === 0) {
       return res.status(404).json({ message: 'No questions found for this language' });
     }
-    
-    // Grade the test
+
+    // Grade answers
     let score = 0;
     const gradedAnswers = [];
     const topicBreakdown = new Map();
-    
+
     questions.forEach((question, index) => {
       const userAnswer = answers[index];
       const isCorrect = userAnswer === question.correctAnswer;
-      
+
       if (isCorrect) score++;
-      
+
       gradedAnswers.push({
         questionId: question._id,
-        userAnswer: userAnswer,
-        isCorrect: isCorrect,
+        userAnswer,
+        isCorrect
       });
-      
-      // Track topic performance
+
       const topic = question.topic;
+
       if (!topicBreakdown.has(topic)) {
         topicBreakdown.set(topic, { correct: 0, total: 0 });
       }
-      const topicStats = topicBreakdown.get(topic);
-      topicStats.total++;
-      if (isCorrect) topicStats.correct++;
+
+      const stats = topicBreakdown.get(topic);
+      stats.total++;
+      if (isCorrect) stats.correct++;
     });
-    
-    // Calculate percentage and proficiency level
+
     const totalQuestions = questions.length;
     const percentage = Math.round((score / totalQuestions) * 100);
-    
-    let proficiencyLevel;
-    if (percentage <= 40) {
-      proficiencyLevel = 'Beginner';
-    } else if (percentage <= 70) {
-      proficiencyLevel = 'Intermediate';
-    } else {
-      proficiencyLevel = 'Advanced';
-    }
-    
-    // ✅ CHANGED: Create new assessment record with attempt number
+
+    let proficiencyLevel = 'Beginner';
+    if (percentage > 70) proficiencyLevel = 'Advanced';
+    else if (percentage > 40) proficiencyLevel = 'Intermediate';
+
+    // Create new attempt
     const userAssessment = await UserAssessment.create({
       userId,
       language,
-      attemptNumber, // Store which attempt this is
+      attemptNumber,
       answers: gradedAnswers,
       score,
       totalQuestions,
       percentage,
       proficiencyLevel,
-      topicBreakdown: Object.fromEntries(topicBreakdown),
+      topicBreakdown,  // Stored as Map
       timeTaken: timeTaken || null,
     });
-    
-    // ✅ CHANGED: Update user with latest proficiency level and attempt date
+
+    // Update user profile
     await User.findByIdAndUpdate(userId, {
       hasCompletedAssessment: true,
       assessmentLanguage: language,
-      proficiencyLevel: proficiencyLevel,
+      proficiencyLevel,
       lastAssessmentDate: new Date(),
     });
-    
+
     res.status(201).json({
       message: 'Assessment completed successfully',
       result: {
+        attemptNumber,
         score,
         totalQuestions,
         percentage,
         proficiencyLevel,
         topicBreakdown: Object.fromEntries(topicBreakdown),
-        attemptNumber, // Return attempt number to frontend
-      },
+      }
     });
+
   } catch (error) {
-    console.log(error);
+    console.error("Error submitting assessment:", error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// ✅ UPDATED: GET USER'S LATEST ASSESSMENT RESULT
+/* ---------------------------------------------
+   GET LATEST RESULT
+--------------------------------------------- */
 exports.getUserResult = async (req, res) => {
   try {
     const { userId } = req.params;
-    
-    // ✅ CHANGED: Get the most recent assessment by sorting by completedAt descending
+
     const result = await UserAssessment.findOne({ userId })
-      .sort({ completedAt: -1 }) // Get the latest attempt
+      .sort({ completedAt: -1 })
       .populate('userId', 'name email')
-      .populate('answers.questionId', 'question topic questionType');
-    
+      .populate('answers.questionId', 'question topic');
+
     if (!result) {
       return res.status(404).json({ message: 'No assessment found for this user' });
     }
-    
+
     res.status(200).json({ result });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// ✅ NEW: GET ALL USER'S ASSESSMENT ATTEMPTS
+/* ---------------------------------------------
+   GET ALL USER ATTEMPTS
+--------------------------------------------- */
 exports.getUserAllAttempts = async (req, res) => {
   try {
     const { userId } = req.params;
-    
+
     const attempts = await UserAssessment.find({ userId })
-      .sort({ completedAt: -1 }) // Most recent first
-      .populate('userId', 'name email')
-      .populate('answers.questionId', 'question topic questionType');
-    
-    if (!attempts.length) {
-      return res.status(404).json({ message: 'No assessments found for this user' });
-    }
-    
-    res.status(200).json({ 
+      .sort({ completedAt: -1 })
+      .populate('answers.questionId', 'question topic');
+
+    res.status(200).json({
       attempts,
-      totalAttempts: attempts.length 
+      totalAttempts: attempts.length
     });
+
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// CHECK IF USER HAS COMPLETED ASSESSMENT
+/* ---------------------------------------------
+   CHECK USER ASSESSMENT STATUS
+--------------------------------------------- */
 exports.checkAssessmentStatus = async (req, res) => {
   try {
     const { userId } = req.params;
-    
+
     const user = await User.findById(userId);
-    
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
     res.status(200).json({
       hasCompletedAssessment: user.hasCompletedAssessment,
       assessmentLanguage: user.assessmentLanguage,
       proficiencyLevel: user.proficiencyLevel,
     });
+
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
