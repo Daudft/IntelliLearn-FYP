@@ -1,190 +1,178 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function AssessmentResult() {
   const location = useLocation();
   const navigate = useNavigate();
   const result = location.state?.result;
+  const language = location.state?.language?.toLowerCase();
 
-  // If no result, redirect to assessment
-  if (!result) {
-    navigate("/assessment");
-    return null;
-  }
+  // Redirect safely if no result found
+  useEffect(() => {
+    if (!result) {
+      navigate("/assessment", { replace: true });
+    }
+  }, [result, navigate]);
 
-  const { score, totalQuestions, percentage, proficiencyLevel, topicBreakdown } = result;
+  if (!result) return null;
 
-  // Level styling
+  const { score, totalQuestions, percentage, proficiencyLevel } = result;
+
   const getLevelStyles = () => {
     switch (proficiencyLevel) {
-      case 'Beginner':
+      case "Beginner":
         return {
-          bg: 'bg-orange-100',
-          text: 'text-orange-800',
-          border: 'border-orange-300',
-          icon: '🌱'
+          bg: "from-orange-500 to-orange-600",
+          icon: "🌱",
+          message: "Great start! Keep learning and practicing to improve your skills."
         };
-      case 'Intermediate':
+      case "Intermediate":
         return {
-          bg: 'bg-blue-100',
-          text: 'text-blue-800',
-          border: 'border-blue-300',
-          icon: '🚀'
+          bg: "from-blue-500 to-blue-600",
+          icon: "🚀",
+          message: "Well done! You have a solid foundation. Keep building on it!"
         };
-      case 'Advanced':
+      case "Advanced":
         return {
-          bg: 'bg-green-100',
-          text: 'text-green-800',
-          border: 'border-green-300',
-          icon: '⭐'
+          bg: "from-green-500 to-green-600",
+          icon: "⭐",
+          message: "Excellent work! You have strong knowledge in this language!"
         };
       default:
         return {
-          bg: 'bg-gray-100',
-          text: 'text-gray-800',
-          border: 'border-gray-300',
-          icon: '📊'
+          bg: "from-gray-500 to-gray-600",
+          icon: "📊",
+          message: "Assessment completed successfully!"
         };
     }
   };
 
   const levelStyles = getLevelStyles();
 
-  // Motivational messages
-  const getMessage = () => {
-    if (percentage <= 40) {
-      return "Great start! Keep learning and practicing to improve your skills.";
-    } else if (percentage <= 70) {
-      return "Well done! You have a solid foundation. Keep building on it!";
+  const handleRetakeTest = () => {
+    if (language) {
+      navigate(`/assessment/test/${language}`, { replace: true });
     } else {
-      return "Excellent work! You have strong knowledge in this language!";
+      navigate("/assessment");
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F1F2F4] py-12 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4 overflow-hidden">
+      <div className="max-w-5xl w-full">
         
-        {/* Header - Celebration */}
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🎉</div>
-          <h1 className="text-5xl font-bold text-gray-900 mb-2">
-            Assessment Complete!
-          </h1>
-          <p className="text-xl text-gray-600">
-            {getMessage()}
-          </p>
-        </div>
-
         {/* Main Result Card */}
-        <div className="bg-white rounded-3xl p-10 shadow-xl mb-8">
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           
-          {/* Score Circle */}
-          <div className="flex justify-center mb-8">
-            <div className="relative">
-              <svg className="transform -rotate-90 w-48 h-48">
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="88"
-                  stroke="#E5E7EB"
-                  strokeWidth="16"
-                  fill="none"
-                />
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="88"
-                  stroke="#E6FF03"
-                  strokeWidth="16"
-                  fill="none"
-                  strokeDasharray={`${percentage * 5.53} 553`}
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="text-5xl font-bold text-gray-900">{percentage}%</div>
-                <div className="text-gray-600">{score}/{totalQuestions}</div>
-              </div>
+          {/* Header */}
+          <div className={`bg-gradient-to-r ${levelStyles.bg} p-8 text-white`}>
+            <div className="text-center">
+              <div className="text-5xl mb-3">{levelStyles.icon}</div>
+              <h1 className="text-4xl font-black mb-2">Assessment Complete!</h1>
+              <p className="text-white/90 text-lg">{levelStyles.message}</p>
             </div>
           </div>
 
-          {/* Proficiency Level Badge */}
-          <div className="flex justify-center mb-8">
-            <div className={`${levelStyles.bg} ${levelStyles.text} px-8 py-4 rounded-2xl border-2 ${levelStyles.border}`}>
-              <div className="flex items-center gap-3">
-                <span className="text-3xl">{levelStyles.icon}</span>
-                <div>
-                  <div className="text-sm font-medium">Your Level</div>
-                  <div className="text-2xl font-bold">{proficiencyLevel}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Stats Grid */}
-          <div className="grid md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-green-50 rounded-xl p-6 text-center border-2 border-green-200">
-              <div className="text-4xl font-bold text-green-600">{score}</div>
-              <div className="text-gray-700 font-medium">Correct Answers</div>
-            </div>
-            <div className="bg-red-50 rounded-xl p-6 text-center border-2 border-red-200">
-              <div className="text-4xl font-bold text-red-600">{totalQuestions - score}</div>
-              <div className="text-gray-700 font-medium">Incorrect Answers</div>
-            </div>
-            <div className="bg-blue-50 rounded-xl p-6 text-center border-2 border-blue-200">
-              <div className="text-4xl font-bold text-blue-600">{totalQuestions}</div>
-              <div className="text-gray-700 font-medium">Total Questions</div>
-            </div>
-          </div>
-
-        </div>
-
-        {/* Topic Breakdown */}
-        {topicBreakdown && Object.keys(topicBreakdown).length > 0 && (
-          <div className="bg-white rounded-3xl p-8 shadow-xl mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">
-              📊 Performance by Topic
-            </h3>
-            <div className="space-y-4">
-              {Object.entries(topicBreakdown).map(([topic, stats]) => {
-                const topicPercentage = Math.round((stats.correct / stats.total) * 100);
-                return (
-                  <div key={topic}>
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-semibold text-gray-900">{topic}</span>
-                      <span className="text-gray-600">
-                        {stats.correct}/{stats.total} ({topicPercentage}%)
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        className="bg-[#E6FF03] h-3 rounded-full transition-all"
-                        style={{ width: `${topicPercentage}%` }}
-                      ></div>
+          {/* Content */}
+          <div className="p-8">
+            <div className="grid md:grid-cols-2 gap-8">
+              
+              {/* Score Circle */}
+              <div className="flex flex-col items-center justify-center">
+                <div className="relative mb-6">
+                  <svg className="transform -rotate-90 w-56 h-56">
+                    <circle
+                      cx="112"
+                      cy="112"
+                      r="100"
+                      stroke="#E5E7EB"
+                      strokeWidth="20"
+                      fill="none"
+                    />
+                    <circle
+                      cx="112"
+                      cy="112"
+                      r="100"
+                      stroke="#E6FF03"
+                      strokeWidth="20"
+                      fill="none"
+                      strokeDasharray={`${percentage * 6.28} 628`}
+                      strokeLinecap="round"
+                      className="transition-all duration-1000"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <div className="text-6xl font-black text-gray-900">{percentage}%</div>
+                    <div className="text-gray-500 text-lg font-medium">
+                      {score}/{totalQuestions}
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+                </div>
 
-        {/* Next Steps */}
-        <div className="bg-gradient-to-r from-[#E6FF03] to-[#d7ee00] rounded-3xl p-8 shadow-xl">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
-            🚀 What's Next?
-          </h3>
-          <p className="text-gray-800 mb-6">
-            Based on your {proficiencyLevel} level, we'll create a personalized learning path just for you!
-          </p>
-          <button
-            onClick={() => navigate("/")}
-            className="w-full bg-black text-white font-semibold py-4 rounded-xl 
-            hover:bg-gray-800 transition-all text-lg"
-          >
-            Continue to Dashboard
-          </button>
+                {/* Proficiency Badge */}
+                <div className={`bg-gradient-to-r ${levelStyles.bg} text-white px-8 py-4 rounded-2xl shadow-lg`}>
+                  <div className="text-center">
+                    <div className="text-sm font-medium opacity-90">Your Level</div>
+                    <div className="text-2xl font-black">{proficiencyLevel}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats */}
+              <div className="flex flex-col justify-center space-y-4">
+                
+                <div className="bg-green-100 rounded-2xl p-6 border-green-200 border-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-green-700">Correct Answers</div>
+                      <div className="text-4xl font-black text-green-600">{score}</div>
+                    </div>
+                    <div className="text-5xl">✓</div>
+                  </div>
+                </div>
+
+                <div className="bg-red-100 rounded-2xl p-6 border-red-200 border-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-red-700">Incorrect Answers</div>
+                      <div className="text-4xl font-black text-red-600">{totalQuestions - score}</div>
+                    </div>
+                    <div className="text-5xl">✗</div>
+                  </div>
+                </div>
+
+                <div className="bg-blue-100 rounded-2xl p-6 border-blue-200 border-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-medium text-blue-700">Total Questions</div>
+                      <div className="text-4xl font-black text-blue-600">{totalQuestions}</div>
+                    </div>
+                    <div className="text-5xl">📝</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Buttons */}
+            <div className="grid md:grid-cols-2 gap-4 mt-8">
+              <button
+                onClick={handleRetakeTest}
+                className="bg-white border-2 border-gray-300 text-gray-900 font-bold py-4 rounded-xl hover:bg-gray-50 transition-all"
+              >
+                Retake Test
+              </button>
+
+              <button
+                onClick={() => navigate("/")}
+                className="bg-gradient-to-r from-[#E6FF03] to-[#d7ee00] text-gray-900 font-bold py-4 rounded-xl hover:from-[#d7ee00] hover:to-[#c8e003] transition-all"
+              >
+                Go to Dashboard
+              </button>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
