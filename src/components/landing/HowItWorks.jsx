@@ -49,7 +49,7 @@ export default function HowItWorks() {
 
   return (
     <div>
-      <section className="relative w-full bg-white border border-gray-200  overflow-hidden">
+      <section id="how-it-works" className="relative w-full bg-white border border-gray-200  overflow-hidden">
 
         {/* BACKGROUND GRID */}
         <div

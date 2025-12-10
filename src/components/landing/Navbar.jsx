@@ -3,6 +3,29 @@ import { useState } from "react";
 export default function Navbar() {
   const [hoveredButton, setHoveredButton] = useState(null);
 
+  const smoothScrollTo = (targetY, duration = 900) => {
+  const startY = window.scrollY;
+  const difference = targetY - startY;
+  let startTime = null;
+
+  const easeOutExpo = (t) =>
+    t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+
+  const animation = (currentTime) => {
+    if (!startTime) startTime = currentTime;
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easedProgress = easeOutExpo(progress);
+
+    window.scrollTo(0, startY + difference * easedProgress);
+
+    if (elapsed < duration) requestAnimationFrame(animation);
+  };
+
+  requestAnimationFrame(animation);
+};
+
+
   return (
     <div className="w-full bg-[#F1F2F4] py-4">
 
@@ -18,11 +41,53 @@ export default function Navbar() {
 
         {/* Center Links */}
         <ul className="hidden md:flex items-center space-x-10 text-[#F5F5F5] font-medium">
-          <li className="cursor-pointer ">Features</li>
-          <li className="cursor-pointer ">How it Works</li>
-          <li className="cursor-pointer ">Pricing</li>
-          <li className="cursor-pointer ">Courses</li>
-        </ul>
+  {[
+    { label: "Features", target: "features" },
+    { label: "How it Works", target: "how-it-works" },
+    { label: "Pricing", target: "pricing" },
+    { label: "Courses", target: "courses" },
+  ].map((item) => (
+    <li
+      key={item.label}
+      onMouseEnter={() => setHoveredButton(item.label)}
+      onMouseLeave={() => setHoveredButton(null)}
+      onClick={() => {
+        const section = document.getElementById(item.target);
+        if (section) {
+          section.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }}
+      className="relative cursor-pointer overflow-hidden"
+    >
+      {/* Default text */}
+      <span
+        className={`inline-block transition-all duration-500 ${
+          hoveredButton === item.label
+            ? "-translate-y-6 opacity-0"
+            : "translate-y-0 opacity-100"
+        }`}
+      >
+        {item.label}
+      </span>
+
+      {/* Hover text */}
+      <span
+        className={`absolute inset-0 flex items-center justify-center transition-all duration-500 ${
+          hoveredButton === item.label
+            ? "translate-y-0 opacity-100"
+            : "translate-y-6 opacity-0"
+        }`}
+      >
+        {item.label}
+      </span>
+    </li>
+  ))}
+</ul>
+
+
 
         {/* RIGHT SIDE BUTTONS */}
         <div className="hidden md:flex items-center space-x-4">
