@@ -4,7 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const connectDB = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
-const assessmentRoutes = require('./routes/assessmentRoutes'); // ✅ NEW - Import assessment routes
+const assessmentRoutes = require('./routes/assessmentRoutes');
 
 dotenv.config();
 
@@ -13,17 +13,24 @@ const app = express();
 // Connect to database
 connectDB();
 
+// CORS Configuration for Local + Render + Vercel
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      process.env.FRONTEND_URL
+    ],
+    credentials: true
+  })
+);
+
 // Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true, // Allow cookies
-}));
 app.use(express.json());
 app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/assessment', assessmentRoutes); // ✅ NEW - Use assessment routes
+app.use('/api/assessment', assessmentRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -35,7 +42,7 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000; // IMPORTANT for Render
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
