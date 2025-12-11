@@ -32,12 +32,21 @@ export default function Navbar() {
       {/* FULL WIDTH WHITE NAVBAR */}
       <nav className="w-full bg-black rounded-2xl shadow-sm px-8 py-4 flex items-center justify-between">
 
-        {/* Logo (LEFT CORNER) */}
-        <a href="/">
-          <h1 className="text-2xl font-bold text-[#F5F5F5] cursor-pointer">
-            IntelliLearn
-          </h1>
-        </a>
+ {/* Logo (LEFT CORNER) */}
+<a href="/">
+  <h1 className="cursor-pointer flex items-baseline">
+    <span className="text-[26px] font-bold text-[#E6FF03] leading-none">
+      Intelli
+    </span>
+    <span className="text-[24px] font-medium text-[#E6E6E6] leading-none">
+      Learn
+    </span>
+  </h1>
+</a>
+
+
+
+
 
         {/* Center Links */}
         <ul className="hidden md:flex items-center space-x-10 text-[#F5F5F5] font-medium">
@@ -52,6 +61,15 @@ export default function Navbar() {
       onMouseEnter={() => setHoveredButton(item.label)}
       onMouseLeave={() => setHoveredButton(null)}
       onClick={() => {
+        // <<< MINIMAL CHANGE: if the item is the Courses link, go to the route.
+        if (item.target === "courses") {
+          // Use a full route navigation so /courses page opens.
+          // We use window.location to avoid changing other code (no imports added).
+          window.location.href = "/courses";
+          return;
+        }
+
+        // existing scroll behavior for other links
         const section = document.getElementById(item.target);
         if (section) {
           section.scrollIntoView({

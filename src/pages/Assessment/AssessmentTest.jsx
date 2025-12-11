@@ -131,34 +131,33 @@ export default function AssessmentTest() {
       <div className="flex-1 flex flex-col max-w-7xl mx-auto w-full p-4">
         
         {/* Header */}
-        <div className="bg-white rounded-xl p-3 shadow-lg mb-2 flex-shrink-0">
-          <div className="flex justify-between items-center mb-2">
-            <div className="flex items-center gap-3">
-              <h2 className="text-xl font-black text-gray-900">
+        <div className="bg-white rounded-xl p-5 shadow-lg mb-2 flex-shrink-0">
+          <div className="flex justify-between items-center mb-3">
+            <div className="flex items-center gap-4">
+              <h2 className="text-2xl font-black text-gray-900">
                 {normalizedLanguage.toUpperCase()} Assessment
               </h2>
-              <span className="text-xs text-gray-500 font-medium">
+              <span className="text-sm text-gray-500 font-medium">
                 {currentQuestion + 1}/{questions.length}
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">Progress:</span>
-              <span className="text-lg font-black text-gray-900">
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-500">Progress:</span>
+              <span className="text-xl font-black text-gray-900">
                 {answeredCount}
-                <span className="text-gray-400 text-sm">/{questions.length}</span>
+                <span className="text-gray-400 text-base">/{questions.length}</span>
               </span>
             </div>
           </div>
 
-          <div className="relative w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
+          <div className="relative w-full bg-gray-200 rounded-full h-2 overflow-hidden">
             <div
               className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#E6FF03] to-[#d7ee00] rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
         </div>
-
         {/* Main Content */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-6 gap-3 min-h-0">
 

@@ -50,7 +50,7 @@ export default function Hero() {
           {/* SOCIAL PROOF */}
           <div className="flex items-center gap-4 mt-10">
             <div className="flex -space-x-4">
-              <img src="https://i.pravatar.cc/50?img=1" className="w-12 h-12 rounded-full border-2 border-white shadow" />
+              <img src="https://i.pravatar.cc/50?img=1" className="w-12 h-12 bg-cover rounded-full border-2 border-white shadow" />
               <img src="https://i.pravatar.cc/50?img=2" className="w-12 h-12 rounded-full border-2 border-white shadow" />
               <img src="https://i.pravatar.cc/50?img=3" className="w-12 h-12 rounded-full border-2 border-white shadow" />
             </div>
