@@ -21,10 +21,11 @@ export default function SignUp() {
   const [strength, setStrength] = useState("");
   const [strengthPercent, setStrengthPercent] = useState(0);
 
-    // Password Strength Logic (Updated with full rules)
+  // Password Strength Logic (Updated with full rules)
   useEffect(() => {
     if (!password) {
       setStrength("");
+      setStrengthPercent(0);
       return;
     }
 
@@ -39,24 +40,29 @@ export default function SignUp() {
     // Weak conditions
     if (password.length < 6 || conditionsMet < 2) {
       setStrength("weak");
+      setStrengthPercent(25);
       return;
     }
 
     // Medium conditions (some requirements met)
     if (conditionsMet >= 2 && conditionsMet < 4) {
       setStrength("medium");
+      // Set percent depending on conditions met and length
+      const percent = Math.min(50 + conditionsMet * 10 + (isLongEnough ? 10 : 0), 85);
+      setStrengthPercent(percent);
       return;
     }
 
     // Strong conditions (ALL requirements met)
     if (conditionsMet === 4 && isLongEnough) {
       setStrength("strong");
+      setStrengthPercent(100);
       return;
     }
 
     setStrength("medium");
+    setStrengthPercent(60);
   }, [password]);
-
 
   const codeSamples = {
     python: `
@@ -96,6 +102,25 @@ int main() {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+
+    // BLOCK SIGNUP IF PASSWORD IS WEAK
+    if (strength === "weak") {
+      setMessage({
+        type: "error",
+        text: "Your password is too weak. Use uppercase, lowercase, numbers, symbols, and minimum 8 characters.",
+      });
+      return; // stop function
+    }
+
+    // BLOCK IF PASSWORDS DO NOT MATCH
+    if (password !== passwordConfirm) {
+      setMessage({
+        type: "error",
+        text: "Passwords do not match.",
+      });
+      return;
+    }
+
     setLoading(true);
     setMessage({ type: "", text: "" });
 
@@ -110,7 +135,7 @@ int main() {
       // 🎉 SUCCESS stays on same page (NO REDIRECT)
       setMessage({ type: "success", text: response.message });
     } catch (err) {
-      const msg = err.response?.data?.message || "Signup failed.";
+      const msg = err?.response?.data?.message || "Signup failed.";
       setMessage({ type: "error", text: msg });
     } finally {
       setLoading(false);
@@ -119,34 +144,33 @@ int main() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F1F2F4] px-4">
-
-      <div className="bg-white w-full max-w-6xl
- rounded-3xl shadow-lg flex flex-col md:flex-row overflow-hidden min-h-[620px]">
-
+      <div
+        className="bg-white w-full max-w-6xl
+ rounded-3xl shadow-lg flex flex-col md:flex-row overflow-hidden min-h-[620px]"
+      >
         {/* LEFT SIDE */}
         <div className="w-full md:w-1/2 p-6 md:p-8 space-y-3">
-
           <h2 className="text-3xl font-bold text-gray-900">Create Account</h2>
           <p className="text-gray-600">Join IntelliLearn and start improving your skills.</p>
 
           {/* SUCCESS / ERROR */}
           {message.text && (
             <div
-  className={`
+              role="alert"
+              aria-live="polite"
+              className={`
     p-2 rounded-md text-xs 
     transition-all duration-300 ease-in-out
     ${message.type === "success"
-      ? "bg-green-100 text-green-700 border border-green-300 animate-fadeIn"
-      : "bg-red-100 text-red-700 border border-red-300 animate-fadeIn"}
+                  ? "bg-green-100 text-green-700 border border-green-300 animate-fadeIn"
+                  : "bg-red-100 text-red-700 border border-red-300 animate-fadeIn"}
   `}
->
-  {message.text}
-</div>
-
+            >
+              {message.text}
+            </div>
           )}
 
           <form className="space-y-4" onSubmit={handleSignUp}>
-
             {/* FULL NAME */}
             <div>
               <label className="block font-medium text-gray-800 mb-1 text-sm">Full Name</label>
@@ -186,8 +210,9 @@ int main() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full px-3 py-2 rounded-lg border border-black/10 bg-white text-gray-900
-                  outline-none focus:border-gray-300 focus:ring-1 focus:ring-gray-200 transition text-sm"
+                  className={`w-full px-3 py-2 rounded-lg border ${
+                    strength === "weak" ? "border-red-400" : "border-black/10"
+                  } bg-white text-gray-900 outline-none focus:border-gray-300 focus:ring-1 focus:ring-gray-200 transition text-sm`}
                 />
 
                 {/* 👁 EYE ICON */}
@@ -200,49 +225,49 @@ int main() {
               </div>
 
               {/* PASSWORD RULE */}
-              <p className="text-xs text-gray-500 mt-1">
-                Use uppercase, lowercase, and numbers.
-              </p>
+              <p className="text-xs text-gray-500 mt-1">Use uppercase, lowercase, and numbers.</p>
 
               {/* PASSWORD STRENGTH BAR */}
-{/* 3–Step Password Strength Indicator */}
-<div className={`flex gap-2 mt-2 transition-opacity ${password ? "opacity-100" : "opacity-0"}`}>
+              {/* 3–Step Password Strength Indicator */}
+              <div className={`flex gap-2 mt-2 transition-opacity ${password ? "opacity-100" : "opacity-0"}`}>
+                {/* Step 1 */}
+                <div
+                  className={`w-8 h-1 rounded-full transition-all duration-300 ${
+                    strength === "weak" || strength === "medium" || strength === "strong"
+                      ? strength === "weak"
+                        ? "bg-red-500"
+                        : strength === "medium"
+                        ? "bg-yellow-500"
+                        : "bg-green-500"
+                      : "bg-gray-300"
+                  }`}
+                />
 
-  {/* Step 1 */}
-  <div
-    className={`
-      w-8 h-1 rounded-full transition-all duration-300
-      ${strength === "weak" || strength === "medium" || strength === "strong"
-        ? strength === "weak" ? "bg-red-500"
-        : strength === "medium" ? "bg-yellow-500"
-        : "bg-green-500"
-        : "bg-gray-300"}
-    `}
-  />
+                {/* Step 2 */}
+                <div
+                  className={`w-8 h-1 rounded-full transition-all duration-300 ${
+                    strength === "medium" || strength === "strong"
+                      ? strength === "medium"
+                        ? "bg-yellow-500"
+                        : "bg-green-500"
+                      : "bg-gray-300"
+                  }`}
+                />
 
-  {/* Step 2 */}
-  <div
-    className={`
-      w-8 h-1 rounded-full transition-all duration-300
-      ${strength === "medium" || strength === "strong"
-        ? strength === "medium" ? "bg-yellow-500" : "bg-green-500"
-        : "bg-gray-300"}
-    `}
-  />
+                {/* Step 3 */}
+                <div
+                  className={`w-8 h-1 rounded-full transition-all duration-300 ${
+                    strength === "strong" ? "bg-green-500" : "bg-gray-300"
+                  }`}
+                />
+              </div>
 
-  {/* Step 3 */}
-  <div
-    className={`
-      w-8 h-1 rounded-full transition-all duration-300
-      ${strength === "strong" ? "bg-green-500" : "bg-gray-300"}
-    `}
-  />
-</div>
-
-
-
-
-
+              {/* Inline weak helper */}
+              {strength === "weak" && (
+                <p className="text-xs text-red-600 mt-2">
+                  Password is too weak. Use uppercase, lowercase, numbers, symbols and at least 8 characters.
+                </p>
+              )}
             </div>
 
             {/* CONFIRM PASSWORD */}
@@ -268,7 +293,6 @@ int main() {
                   {showConfirmPass ? "🙈" : "👁️"}
                 </span>
               </div>
-
             </div>
 
             <button
@@ -279,7 +303,6 @@ int main() {
             >
               {loading ? "Creating..." : "Create Account"}
             </button>
-
           </form>
 
           <p className="text-center text-gray-700 text-sm">
@@ -292,10 +315,12 @@ int main() {
 
         {/* RIGHT SIDE VISUALS (unchanged) */}
         <div className="hidden md:flex w-1/2 bg-[#0A0A0A] relative text-white p-8 overflow-hidden">
-          <div className="absolute inset-0 opacity-[0.06]
+          <div
+            className="absolute inset-0 opacity-[0.06]
             bg-[linear-gradient(to_right,#ffffff12_1px,transparent_1px),
             linear-gradient(to_bottom,#ffffff12_1px,transparent_1px)]
-            bg-[size:30px_30px]" />
+            bg-[size:30px_30px]"
+          />
 
           <div className="absolute top-8 left-8 w-16 h-16 border border-gray-600 rounded-lg opacity-30"></div>
           <div className="absolute bottom-10 right-10 w-24 h-24 border border-gray-600 rounded-full opacity-20"></div>
@@ -310,9 +335,7 @@ int main() {
                   key={language}
                   onClick={() => setLang(language)}
                   className={`px-3 py-1 rounded-md text-xs font-semibold transition ${
-                    lang === language
-                      ? "bg-[#E6FF03] text-black"
-                      : "bg-white/10 border border-gray-700 text-gray-300 hover:bg-white/20"
+                    lang === language ? "bg-[#E6FF03] text-black" : "bg-white/10 border border-gray-700 text-gray-300 hover:bg-white/20"
                   }`}
                 >
                   {language.toUpperCase()}
@@ -327,9 +350,7 @@ int main() {
               {codeSamples[lang]}
             </div>
           </div>
-
         </div>
-
       </div>
     </div>
   );
