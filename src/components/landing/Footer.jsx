@@ -85,11 +85,14 @@ export default function Footer() {
             viewport={{ once: true }}
           >
             <div className="mb-4">
-              <h3 className="text-3xl font-bold">
-                <span className="bg-linear-to-r from-yellow-300 to-green-400 text-transparent bg-clip-text">
+              <h3 className="text-[26px] font-bold">
+                <span className="bg-linear-to-r text-[#E6FF03]  bg-clip-text">
                   Intelli
                 </span>
-                Learn
+                <span className="text-[24px] font-medium text-[#E6E6E6]">
+                  Learn
+                </span>
+                
               </h3>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed max-w-md mx-auto">
